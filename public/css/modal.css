@@ -69,11 +69,11 @@
   line-height: 1.5;
 }
 
-/* Body: two columns, centered, vertically aligned */
+/* Body: two columns, aligned to top */
 .modal-body {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   gap: 32px;
   padding: 0 32px 36px;
 }
@@ -85,8 +85,8 @@
 
 .preview-animation-container {
   width: 100%;
-  overflow: hidden;
   border-radius: var(--radius-lg);
+  overflow: hidden;
 }
 
 /* Compact card proportions inside modal */
