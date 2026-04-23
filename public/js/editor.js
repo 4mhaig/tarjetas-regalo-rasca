@@ -535,22 +535,36 @@ function closeResultModal() {
 }
 
 function animatePreview(card) {
+  const giftCard = card.querySelector('.gift-card');
+  const header = card.querySelector('.gift-card-header');
   const content = card.querySelector('.gift-card-content');
-  if (!content) return;
+  if (!content || !giftCard) return;
+
+  const scratchGrad = textureHeaderColors[cardConfig.texture] || textureHeaderColors.black;
 
   content.style.position = 'relative';
-
   const scratchLayer = document.createElement('div');
   scratchLayer.style.cssText = `
     position: absolute; inset: 0; z-index: 10;
     opacity: 0; transition: opacity 1s ease-in-out;
+    background: ${scratchGrad};
   `;
-  scratchLayer.style.background = textureHeaderColors[cardConfig.texture] || textureHeaderColors.black;
   content.appendChild(scratchLayer);
 
-  // Content visible → cover with scratch → reveal content (end)
-  setTimeout(() => { scratchLayer.style.opacity = '1'; }, 1000);
-  setTimeout(() => { scratchLayer.style.opacity = '0'; }, 3000);
+  // Cover: apply gradient to full card so header + content look seamless
+  setTimeout(() => {
+    giftCard.style.background = scratchGrad;
+    if (header) header.style.background = 'transparent';
+    scratchLayer.style.opacity = '1';
+  }, 1000);
+
+  // Reveal: restore header and remove card gradient
+  setTimeout(() => {
+    scratchLayer.style.opacity = '0';
+    giftCard.style.background = '';
+    if (header) header.style.background = '';
+  }, 3000);
+
   setTimeout(() => { scratchLayer.remove(); }, 4200);
 }
 

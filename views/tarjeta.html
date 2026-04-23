@@ -18,13 +18,13 @@
         box-shadow: var(--shadow-lg) !important;
       }
     }
-    /* Shine overlay — sweeps once on load */
+    /* Shine overlay — sweeps once on load, stops before progress section */
     .scratch-shine {
       position: absolute;
       top: 0;
       left: 0;
+      bottom: 64px; /* exclude progress section (~62px tall) */
       width: 45%;
-      height: 100%;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
       animation: shimmer 1.2s ease-in-out 0.4s both;
       pointer-events: none;
@@ -346,7 +346,15 @@
     async function downloadCardPDF() {
       try {
         const cardElement = document.querySelector('.gift-card');
+        const progressSection = cardElement.querySelector('.progress-section');
+        const shine = cardElement.querySelector('.scratch-shine');
+        if (progressSection) progressSection.style.display = 'none';
+        if (shine) shine.style.display = 'none';
+
         const canvas = await html2canvas(cardElement, { scale: 2, backgroundColor: null });
+
+        if (progressSection) progressSection.style.display = '';
+        if (shine) shine.style.display = '';
         const imgData = canvas.toDataURL('image/png');
         const w = window.open('', '_blank');
         w.document.write(`<!DOCTYPE html><html><head><style>
