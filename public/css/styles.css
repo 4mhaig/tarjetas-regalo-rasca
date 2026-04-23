@@ -1,16 +1,21 @@
 :root {
-  --color-bg-primary: #111111;
-  --color-bg-secondary: #1A1A1A;
-  --color-bg-tertiary: #0A0A0A;
+  --pale-gold: #C0B283;
+  --silk: #DCD0C0;
+  --paper: #F4F4F4;
+  --charcoal: #373737;
 
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: #777777;
-  --color-text-tertiary: #444444;
+  --color-bg-primary: #1A1A1A;
+  --color-bg-secondary: #222222;
+  --color-bg-tertiary: #111111;
 
-  --color-border-primary: #1F1F1F;
-  --color-border-secondary: #2A2A2A;
+  --color-text-primary: #F4F4F4;
+  --color-text-secondary: #DCD0C0;
+  --color-text-tertiary: #888888;
 
-  --color-accent: #FFFFFF;
+  --color-border-primary: #444444;
+  --color-border-secondary: #4A4A4A;
+
+  --color-accent: #C0B283;
 
   --gradient-purple: linear-gradient(135deg, #534AB7 0%, #7F77DD 100%);
   --gradient-coral: linear-gradient(135deg, #993C1D 0%, #D85A30 100%);
@@ -119,13 +124,13 @@ button:active, .btn:active { transform: scale(0.98); }
 button:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
 
 .btn-primary {
-  background: #FFFFFF;
-  color: #000000;
+  background: #C0B283;
+  color: #1A1A1A;
   border: none;
   font-weight: 600;
 }
-.btn-primary:hover { background: #E8E8E8; color: #000000; }
-.btn-primary:disabled { background: #2A2A2A; color: #555555; }
+.btn-primary:hover { background: #D4C99A; color: #1A1A1A; }
+.btn-primary:disabled { background: #4A4A4A; color: #777777; }
 
 .segmented-control {
   display: flex;
@@ -148,7 +153,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important;
 }
 
 .segmented-control button.active {
-  background: #2A2A2A;
+  background: #444444;
   color: var(--color-text-primary);
 }
 

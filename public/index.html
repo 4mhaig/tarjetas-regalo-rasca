@@ -14,9 +14,31 @@
   <div class="editor-container">
     <header class="editor-header">
       <h1>Crea tu tarjeta regalo sorpresa</h1>
+      <p class="editor-subtitle">Diseña una tarjeta personalizada con efecto rasca y sorprende a quien más quieras</p>
     </header>
 
-    <div class="editor-layout">
+    <!-- Mobile tabs -->
+    <div class="mobile-tab-bar" id="mobile-tab-bar">
+      <button class="mobile-tab active" onclick="setMobileTab('edit')">Diseño</button>
+      <button class="mobile-tab" onclick="setMobileTab('preview')">Vista previa</button>
+    </div>
+
+    <!-- Mobile preview section -->
+    <div class="mobile-preview-section" id="mobile-preview-section">
+      <div class="preview-header">
+        <span class="preview-label">Vista previa</span>
+        <label class="scratch-toggle-switch">
+          <input type="checkbox" class="scratch-toggle-check" onchange="setScratchPreview(this.checked)">
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          <span class="toggle-label-text">Con rasca</span>
+        </label>
+      </div>
+      <div class="preview-card-container">
+        <div id="mobile-preview-card" class="gift-card"></div>
+      </div>
+    </div>
+
+    <div class="editor-layout" id="editor-layout">
       <!-- Panel de controles -->
       <div class="controls-panel">
 
@@ -46,17 +68,24 @@
           <h3>Estilo del rasca</h3>
           <div class="field">
             <div class="texture-options">
-              <button type="button" class="texture-btn texture-silver active has-tooltip" data-texture="silver" data-name="Plateada" onclick="setTexture('silver')"></button>
+              <button type="button" class="texture-btn texture-black active has-tooltip" data-texture="black" data-name="Negra" onclick="setTexture('black')"></button>
+              <button type="button" class="texture-btn texture-silver has-tooltip" data-texture="silver" data-name="Plateada" onclick="setTexture('silver')"></button>
               <button type="button" class="texture-btn texture-gold has-tooltip" data-texture="gold" data-name="Dorada" onclick="setTexture('gold')"></button>
               <button type="button" class="texture-btn texture-rainbow has-tooltip" data-texture="rainbow" data-name="Arcoíris" onclick="setTexture('rainbow')"></button>
+              <button type="button" class="texture-btn texture-copper has-tooltip" data-texture="copper" data-name="Cobre" onclick="setTexture('copper')"></button>
+              <button type="button" class="texture-btn texture-rosegold has-tooltip" data-texture="rosegold" data-name="Oro rosa" onclick="setTexture('rosegold')"></button>
+              <button type="button" class="texture-btn texture-holographic has-tooltip" data-texture="holographic" data-name="Holográfica" onclick="setTexture('holographic')"></button>
+              <button type="button" class="texture-btn texture-emerald has-tooltip" data-texture="emerald" data-name="Esmeralda" onclick="setTexture('emerald')"></button>
             </div>
           </div>
         </div>
 
-        <!-- Icono -->
+        <!-- Imagen / Icono -->
         <div class="section-card">
-          <h3>Icono</h3>
+          <h3>Imagen</h3>
+
           <div class="field">
+            <span class="subsection-label">Emoji</span>
             <div class="icon-options" id="icon-options">
               <button type="button" class="icon-btn no-icon has-tooltip" data-icon="" data-name="Sin icono" onclick="setIcon('')">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2l12 12M14 2L2 14"/></svg>
@@ -67,45 +96,54 @@
               <button type="button" class="icon-btn has-tooltip" data-icon="❤️" data-name="Amor" onclick="setIcon('❤️')">❤️</button>
               <button type="button" class="icon-btn has-tooltip" data-icon="🌟" data-name="Estrella" onclick="setIcon('🌟')">🌟</button>
               <button type="button" class="icon-btn has-tooltip" data-icon="💝" data-name="Corazón" onclick="setIcon('💝')">💝</button>
-              <button type="button" class="icon-btn custom-icon-btn has-tooltip" id="custom-icon-btn" data-name="Personalizar" onclick="toggleCustomIcon()">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 1v12M1 7h12"/></svg>
-              </button>
+
+              <!-- Emoji picker trigger -->
+              <div class="emoji-picker-wrapper">
+                <button type="button" class="icon-btn has-tooltip" id="emoji-picker-trigger" data-name="Más emojis" onclick="toggleEmojiPicker(event)">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 1v12M1 7h12"/></svg>
+                </button>
+                <div class="emoji-picker" id="emoji-picker">
+                  <input type="text" class="emoji-picker-search" id="emoji-search" placeholder="Buscar emoji..." oninput="filterEmojis()">
+                  <div id="emoji-picker-content"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="subsection-label">Imagen personalizada</span>
+            <input type="file" id="icon-image-upload" accept="image/*" onchange="handleIconImageUpload(event)" style="display:none;">
+
+            <div class="icon-upload-area" id="icon-upload-area">
+              <label class="icon-upload-label" for="icon-image-upload">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 9V1M3 5l4-4 4 4"/><path d="M1 11v1a1 1 0 001 1h10a1 1 0 001-1v-1"/></svg>
+                Subir imagen
+              </label>
             </div>
 
-            <!-- Panel icono personalizado -->
-            <div class="custom-icon-panel" id="custom-icon-panel">
-              <div class="custom-icon-tabs">
-                <button type="button" class="active" onclick="showCustomIconTab('emoji')">Emoji</button>
-                <button type="button" onclick="showCustomIconTab('image')">Imagen</button>
-              </div>
-
-              <div class="custom-tab active" id="custom-tab-emoji">
-                <div class="custom-emoji-row">
-                  <input type="text" id="custom-emoji-input" placeholder="Escribe un emoji..." maxlength="4">
-                  <button type="button" onclick="applyCustomEmoji()">Aplicar</button>
+            <div class="icon-image-preview" id="icon-image-preview" style="display:none;">
+              <div class="icon-image-preview-row">
+                <div class="icon-crop-container" id="icon-crop-container">
+                  <img id="icon-crop-img" src="" alt="">
                 </div>
-              </div>
-
-              <div class="custom-tab" id="custom-tab-image">
-                <div class="icon-upload-area">
-                  <input type="file" id="icon-image-upload" accept="image/*" onchange="handleIconImageUpload(event)">
-                  <label class="icon-upload-label" for="icon-image-upload">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 9V1M3 5l4-4 4 4"/><path d="M1 11v1a1 1 0 001 1h10a1 1 0 001-1v-1"/></svg>
-                    Subir imagen
+                <div class="icon-image-actions" id="icon-image-actions">
+                  <label for="icon-image-upload" class="icon-action-link">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4H8M6 1.5L8.5 4 6 6.5"/><path d="M10.5 8H4M6 5.5L3.5 8 6 10.5"/></svg>
+                    Reemplazar
                   </label>
+                  <button type="button" class="icon-action-link icon-action-delete" onclick="removeIconImage()">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 3h10M4 3V1.5h4V3M5 5.5v4M7 5.5v4M2 3l.7 7.5a.5.5 0 00.5.5h5.6a.5.5 0 00.5-.5L10 3"/></svg>
+                    Eliminar
+                  </button>
                 </div>
-                <div class="icon-image-preview" id="icon-image-preview" style="display:none;">
-                  <div class="icon-crop-container" id="icon-crop-container">
-                    <img id="icon-crop-img" src="" alt="">
-                  </div>
-                  <div class="crop-sliders">
-                    <label>Posición horizontal</label>
-                    <input type="range" id="icon-pos-x" min="0" max="100" value="50" oninput="updateIconCrop()">
-                    <label style="margin-top:8px;">Posición vertical</label>
-                    <input type="range" id="icon-pos-y" min="0" max="100" value="50" oninput="updateIconCrop()">
-                  </div>
-                  <button type="button" class="remove-icon-btn" onclick="removeIconImage()">Eliminar imagen</button>
-                </div>
+              </div>
+              <div class="crop-sliders">
+                <label>Zoom</label>
+                <input type="range" id="icon-zoom" min="50" max="200" value="100" oninput="updateIconCrop()">
+                <label style="margin-top:8px;">Horizontal</label>
+                <input type="range" id="icon-pos-x" min="0" max="100" value="50" oninput="updateIconCrop()">
+                <label style="margin-top:8px;">Vertical</label>
+                <input type="range" id="icon-pos-y" min="0" max="100" value="50" oninput="updateIconCrop()">
               </div>
             </div>
           </div>
@@ -116,29 +154,11 @@
           <h3>Fondo</h3>
           <div class="field">
             <label>Colores</label>
-            <div class="bg-grid" id="bg-colors">
-              <button type="button" class="bg-option-btn active has-tooltip" data-bg-type="color" data-bg-value="#FFFFFF" data-name="Blanco" onclick="setBackground('color','#FFFFFF')" style="background:#FFFFFF;"></button>
-              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="color" data-bg-value="#FFE5EC" data-name="Rosa" onclick="setBackground('color','#FFE5EC')" style="background:#FFE5EC;"></button>
-              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="color" data-bg-value="#E3F2FD" data-name="Azul" onclick="setBackground('color','#E3F2FD')" style="background:#E3F2FD;"></button>
-              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="color" data-bg-value="#F3E5F5" data-name="Lavanda" onclick="setBackground('color','#F3E5F5')" style="background:#F3E5F5;"></button>
-              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="color" data-bg-value="#FFE0B2" data-name="Melocotón" onclick="setBackground('color','#FFE0B2')" style="background:#FFE0B2;"></button>
-              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="color" data-bg-value="#E8F5E9" data-name="Menta" onclick="setBackground('color','#E8F5E9')" style="background:#E8F5E9;"></button>
-              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="color" data-bg-value="#FFF8E1" data-name="Vainilla" onclick="setBackground('color','#FFF8E1')" style="background:#FFF8E1;"></button>
-              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="color" data-bg-value="#1A1A1A" data-name="Negro" onclick="setBackground('color','#1A1A1A')" style="background:#1A1A1A;"></button>
-            </div>
+            <div class="bg-grid" id="bg-colors-grid"></div>
           </div>
           <div class="field">
             <label>Texturas</label>
-            <div class="bg-grid" id="bg-textures">
-              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="texture" data-bg-value="dots" data-name="Puntos" onclick="setBackground('texture','dots')" style="background-color:#F5F5F5;background-image:radial-gradient(#BBBBBB 1px,transparent 1px);background-size:10px 10px;"></button>
-              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="texture" data-bg-value="grid" data-name="Cuadrícula" onclick="setBackground('texture','grid')" style="background-color:#F5F5F5;background-image:linear-gradient(#CCCCCC 1px,transparent 1px),linear-gradient(90deg,#CCCCCC 1px,transparent 1px);background-size:14px 14px;"></button>
-              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="texture" data-bg-value="lines" data-name="Líneas" onclick="setBackground('texture','lines')" style="background-color:#F5F5F5;background-image:repeating-linear-gradient(0deg,#CCCCCC,#CCCCCC 1px,transparent 1px,transparent 10px);"></button>
-              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="texture" data-bg-value="diagonal" data-name="Diagonal" onclick="setBackground('texture','diagonal')" style="background-color:#FFF8F0;background-image:repeating-linear-gradient(45deg,#E8D5C0 0,#E8D5C0 1px,transparent 0,transparent 50%);background-size:10px 10px;"></button>
-              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="texture" data-bg-value="checker" data-name="Damero" onclick="setBackground('texture','checker')" style="background-color:#F0F0F0;background-image:linear-gradient(45deg,#DDDDDD 25%,transparent 25%),linear-gradient(-45deg,#DDDDDD 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#DDDDDD 75%),linear-gradient(-45deg,transparent 75%,#DDDDDD 75%);background-size:12px 12px;background-position:0 0,0 6px,6px -6px,-6px 0;"></button>
-              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="texture" data-bg-value="paper" data-name="Papel" onclick="setBackground('texture','paper')" style="background-color:#FDF6E3;"></button>
-              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="texture" data-bg-value="noir" data-name="Noir" onclick="setBackground('texture','noir')" style="background-color:#111111;background-image:radial-gradient(#222222 1px,transparent 1px);background-size:12px 12px;"></button>
-              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="texture" data-bg-value="crosshatch" data-name="Malla" onclick="setBackground('texture','crosshatch')" style="background-color:#F5F5F5;background-image:repeating-linear-gradient(0deg,transparent,transparent 9px,#CCCCCC 9px,#CCCCCC 10px),repeating-linear-gradient(90deg,transparent,transparent 9px,#CCCCCC 9px,#CCCCCC 10px);"></button>
-            </div>
+            <div class="bg-grid" id="bg-textures-grid"></div>
           </div>
         </div>
 
@@ -159,7 +179,6 @@
           </div>
         </div>
 
-        <!-- Generar -->
         <button type="button" class="btn btn-primary generate-btn" id="generate-btn" onclick="generateCard()">
           Generar tarjeta
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
@@ -168,7 +187,14 @@
 
       <!-- Preview -->
       <div class="preview-panel">
-        <div class="preview-label">Vista previa</div>
+        <div class="preview-header">
+          <span class="preview-label">Vista previa</span>
+          <label class="scratch-toggle-switch">
+            <input type="checkbox" class="scratch-toggle-check" onchange="setScratchPreview(this.checked)">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            <span class="toggle-label-text">Con rasca</span>
+          </label>
+        </div>
         <div class="preview-card-container">
           <div id="preview-card" class="gift-card"></div>
         </div>
@@ -176,26 +202,13 @@
     </div>
   </div>
 
-  <!-- Botón flotante mobile -->
-  <button type="button" class="floating-preview-btn" id="mobile-preview-btn" onclick="showMobilePreview()">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 10s3.5-7 9-7 9 7 9 7-3.5 7-9 7-9-7-9-7z"/><circle cx="10" cy="10" r="3"/></svg>
-  </button>
 
-  <!-- Bottom sheet mobile -->
-  <div class="bottom-sheet-overlay" id="bottom-sheet-overlay" onclick="hideMobilePreview()">
-    <div class="bottom-sheet" onclick="event.stopPropagation()">
-      <div class="bottom-sheet-handle"></div>
-      <div class="bottom-sheet-content">
-        <div class="bottom-sheet-label">Vista previa</div>
-        <div class="preview-card-container">
-          <div id="mobile-preview-card" class="gift-card"></div>
-        </div>
-        <button type="button" class="btn btn-primary generate-btn" onclick="generateCard()">
-          Generar tarjeta
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
-        </button>
-      </div>
-    </div>
+  <!-- Mobile fixed generate bar -->
+  <div class="mobile-fixed-bar">
+    <button type="button" class="btn btn-primary" id="mobile-generate-btn" onclick="generateCard()">
+      Generar tarjeta
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
+    </button>
   </div>
 
   <!-- Modal resultado -->

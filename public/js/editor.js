@@ -2,12 +2,13 @@ let cardConfig = {
   headerType: 'generic',
   from: '',
   to: '',
-  texture: 'silver',
+  texture: 'black',
   icon: '🎉',
   iconType: 'emoji', // 'emoji' | 'image'
   iconImageSrc: '',
   iconPosX: 50,
   iconPosY: 50,
+  iconZoom: 100,
   backgroundType: 'color',
   backgroundValue: '#FFFFFF',
   title: '¡Feliz Cumpleaños!',
@@ -16,56 +17,182 @@ let cardConfig = {
 };
 
 let generatedCardData = null;
+let showScratchPreview = false;
 
 const textureHeaderColors = {
-  silver: 'linear-gradient(135deg, #534AB7 0%, #7F77DD 100%)',
-  gold: 'linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)',
-  rainbow: 'linear-gradient(135deg, #FF6B9D 0%, #C368E8 50%, #4FACFE 100%)'
+  silver:       'linear-gradient(135deg, #8A8A8A 0%, #D8D8D8 50%, #A0A0A0 100%)',
+  gold:         'linear-gradient(135deg, #B8960C 0%, #FFD700 50%, #C8A400 100%)',
+  rainbow:      'linear-gradient(135deg, #FF6B9D 0%, #C368E8 50%, #4FACFE 100%)',
+  copper:       'linear-gradient(135deg, #B87333 0%, #E8A050 50%, #A0602A 100%)',
+  rosegold:     'linear-gradient(135deg, #C8858A 0%, #F5C8C8 50%, #D4909A 100%)',
+  black:        'linear-gradient(135deg, #1A1A1A 0%, #555555 50%, #333333 100%)',
+  holographic:  'linear-gradient(135deg, #FF6B9D 0%, #FFD700 25%, #6BCB77 50%, #4FACFE 75%, #C368E8 100%)',
+  emerald:      'linear-gradient(135deg, #1B5E20 0%, #4CAF50 50%, #2E7D32 100%)'
 };
 
+const textureTextColors = {
+  silver:      '#1A1A1A',
+  gold:        '#1A1A1A',
+  rosegold:    '#1A1A1A',
+  black:       '#FFFFFF',
+  copper:      '#FFFFFF',
+  emerald:     '#FFFFFF',
+  rainbow:     '#FFFFFF',
+  holographic: '#1A1A1A',
+};
+
+const bgColors = [
+  { name: 'Blanco',     value: '#FFFFFF' },
+  { name: 'Rosa',       value: '#FFE5EC' },
+  { name: 'Azul',       value: '#DBEAFE' },
+  { name: 'Lavanda',    value: '#EDE9FE' },
+  { name: 'Melocotón',  value: '#FFE0B2' },
+  { name: 'Menta',      value: '#D1FAE5' },
+  { name: 'Amarillo',   value: '#FEF9C3' },
+  { name: 'Lila',       value: '#F5D0FE' },
+];
+
+function svgBg(svg) {
+  return "url('data:image/svg+xml," + encodeURIComponent(svg) + "')";
+}
+
 const backgroundTextures = {
-  dots: {
-    bgColor: '#F5F5F5',
-    bgImage: 'radial-gradient(#BBBBBB 1px, transparent 1px)',
-    bgSize: '14px 14px'
+  hearts: {
+    name: 'Corazones',
+    bgColor: '#FFF0F5',
+    bgImage: svgBg('<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><path d="M16 26C8 19 2 14 2 9a7 7 0 0114 0 7 7 0 0114 0c0 5-6 10-14 17z" fill="#FFB3C6"/></svg>'),
+    bgSize: '32px 32px'
   },
-  grid: {
-    bgColor: '#F5F5F5',
-    bgImage: 'linear-gradient(#CCCCCC 1px, transparent 1px), linear-gradient(90deg, #CCCCCC 1px, transparent 1px)',
-    bgSize: '18px 18px'
+  stars: {
+    name: 'Estrellas',
+    bgColor: '#FFFDE7',
+    bgImage: svgBg('<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><polygon points="16,3 19,11 27,11 21,16 23,24 16,19.5 9,24 11,16 5,11 13,11" fill="#FFD700"/></svg>'),
+    bgSize: '32px 32px'
   },
-  lines: {
-    bgColor: '#F5F5F5',
-    bgImage: 'repeating-linear-gradient(0deg, #CCCCCC, #CCCCCC 1px, transparent 1px, transparent 12px)',
+  rainbow: {
+    name: 'Arcoíris',
+    bgColor: '#FFFFFF',
+    bgImage: 'repeating-linear-gradient(45deg, #FF6B6B 0px, #FF6B6B 7px, #FF9F43 7px, #FF9F43 14px, #FFD93D 14px, #FFD93D 21px, #6BCB77 21px, #6BCB77 28px, #4FACFE 28px, #4FACFE 35px, #9B59B6 35px, #9B59B6 42px)',
     bgSize: 'auto'
   },
-  diagonal: {
-    bgColor: '#FFF8F0',
-    bgImage: 'repeating-linear-gradient(45deg, #E8D5C0 0, #E8D5C0 1px, transparent 0, transparent 50%)',
-    bgSize: '12px 12px'
+  confetti: {
+    name: 'Confetti',
+    bgColor: '#FAFAFA',
+    bgImage: 'radial-gradient(circle, #FF6B6B 1.5px, transparent 1.5px), radial-gradient(circle, #FFD93D 1.5px, transparent 1.5px), radial-gradient(circle, #6BCB77 1.5px, transparent 1.5px), radial-gradient(circle, #4FACFE 1.5px, transparent 1.5px), radial-gradient(circle, #FF9F43 1.5px, transparent 1.5px), radial-gradient(circle, #C77DFF 1.5px, transparent 1.5px)',
+    bgSize: '24px 24px',
+    bgPosition: '0 0, 8px 4px, 16px 8px, 4px 12px, 12px 18px, 20px 2px'
   },
-  checker: {
-    bgColor: '#F0F0F0',
-    bgImage: 'linear-gradient(45deg, #DDDDDD 25%, transparent 25%), linear-gradient(-45deg, #DDDDDD 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #DDDDDD 75%), linear-gradient(-45deg, transparent 75%, #DDDDDD 75%)',
-    bgSize: '16px 16px',
-    bgPosition: '0 0, 0 8px, 8px -8px, -8px 0'
+  balloons: {
+    name: 'Globos',
+    bgColor: '#FFF8F0',
+    bgImage: svgBg('<svg xmlns="http://www.w3.org/2000/svg" width="50" height="40"><ellipse cx="10" cy="12" rx="7" ry="9" fill="#FF6B9D" opacity="0.8"/><line x1="10" y1="21" x2="10" y2="28" stroke="#FF6B9D" stroke-width="1" opacity="0.5"/><ellipse cx="34" cy="8" rx="7" ry="9" fill="#4FACFE" opacity="0.8"/><line x1="34" y1="17" x2="34" y2="28" stroke="#4FACFE" stroke-width="1" opacity="0.5"/><ellipse cx="22" cy="18" rx="7" ry="9" fill="#FFD700" opacity="0.8"/><line x1="22" y1="27" x2="22" y2="34" stroke="#FFD700" stroke-width="1" opacity="0.5"/></svg>'),
+    bgSize: '50px 40px'
+  },
+  lightning: {
+    name: 'Rayos',
+    bgColor: '#EEF2FF',
+    bgImage: svgBg('<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><path d="M19 3L9 17h8L8 29l16-18h-8z" fill="#818CF8" opacity="0.85"/></svg>'),
+    bgSize: '32px 32px'
+  },
+  leaves: {
+    name: 'Hojas',
+    bgColor: '#F1F8E9',
+    bgImage: svgBg('<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><path d="M16 3C16 3 4 11 4 19a12 12 0 0024 0C28 11 16 3 16 3z" fill="#4CAF50" opacity="0.7"/><path d="M16 6c0 0 2 4 3 8-2-1-4-2-3-8z" fill="#2E7D32" opacity="0.5"/></svg>'),
+    bgSize: '32px 32px'
   },
   paper: {
-    bgColor: '#FDF6E3',
-    bgImage: 'none',
-    bgSize: 'auto'
-  },
-  noir: {
-    bgColor: '#111111',
-    bgImage: 'radial-gradient(#1E1E1E 1px, transparent 1px)',
-    bgSize: '14px 14px'
-  },
-  crosshatch: {
-    bgColor: '#F5F5F5',
-    bgImage: 'repeating-linear-gradient(0deg, transparent, transparent 9px, #CCCCCC 9px, #CCCCCC 10px), repeating-linear-gradient(90deg, transparent, transparent 9px, #CCCCCC 9px, #CCCCCC 10px)',
+    name: 'Papel antiguo',
+    bgColor: '#EDE0C4',
+    bgImage: 'repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(160,130,80,0.12) 23px, rgba(160,130,80,0.12) 24px), repeating-linear-gradient(90deg, transparent, transparent 23px, rgba(160,130,80,0.06) 23px, rgba(160,130,80,0.06) 24px)',
     bgSize: 'auto'
   }
 };
+
+const EMOJI_DATA = {
+  'Celebración': ['🎉','🎊','🎈','🎁','🎂','🥳','🍾','🥂','✨','🎆','🎇','🪅','🎀','🏆','🥇','🎗️','🪄','🎠'],
+  'Amor':        ['❤️','💝','💕','💖','💗','💓','💞','💟','🥰','😍','💌','💘','💔','😘','🫶','💑','💏','🌹'],
+  'Naturaleza':  ['🌸','🌹','🌺','🌻','🌼','💐','🍀','🌿','🌱','🌲','🍁','🍂','🦋','🐝','🌈','☀️','🌙','⭐'],
+  'Comida':      ['🍰','🎂','🍫','🍬','🍭','🧁','🍩','🍪','🥐','🍷','🥃','🍻','🥂','☕','🍕','🍣','🍓','🍒'],
+  'Viajes':      ['✈️','🚀','⛵','🗺️','🏖️','🏔️','🌍','🗼','🏰','🎡','🌅','🏝️','🚢','🏕️','🎭','🎪','🎑','🗽'],
+  'Actividades': ['⚽','🏀','🎯','🎸','🎹','🎵','🎶','🎮','🎲','♟️','🏋️','🤸','🎨','📚','💻','🔮','🎬','🎤'],
+};
+
+let allEmojis = Object.entries(EMOJI_DATA).flatMap(([cat, emojis]) => emojis.map(e => ({ cat, e })));
+
+function initBgButtons() {
+  const colorsGrid = document.getElementById('bg-colors-grid');
+  bgColors.forEach(({ name, value }) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `bg-option-btn has-tooltip${cardConfig.backgroundType === 'color' && cardConfig.backgroundValue === value ? ' active' : ''}`;
+    btn.dataset.bgType = 'color';
+    btn.dataset.bgValue = value;
+    btn.dataset.name = name;
+    btn.style.cssText = `background:${value};${value === '#FFFFFF' ? 'border:1px solid #ddd;' : ''}`;
+    btn.onclick = () => setBackground('color', value);
+    colorsGrid.appendChild(btn);
+  });
+
+  const texturesGrid = document.getElementById('bg-textures-grid');
+  Object.entries(backgroundTextures).forEach(([key, tex]) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'bg-option-btn has-tooltip';
+    btn.dataset.bgType = 'texture';
+    btn.dataset.bgValue = key;
+    btn.dataset.name = tex.name;
+    btn.style.backgroundColor = tex.bgColor;
+    if (tex.bgImage) btn.style.backgroundImage = tex.bgImage;
+    if (tex.bgSize) btn.style.backgroundSize = tex.bgSize;
+    if (tex.bgPosition) btn.style.backgroundPosition = tex.bgPosition;
+    btn.onclick = () => setBackground('texture', key);
+    texturesGrid.appendChild(btn);
+  });
+}
+
+function initEmojiPicker() {
+  renderEmojiGrid(EMOJI_DATA);
+}
+
+function renderEmojiGrid(data) {
+  const container = document.getElementById('emoji-picker-content');
+  container.innerHTML = '';
+  Object.entries(data).forEach(([cat, emojis]) => {
+    const label = document.createElement('div');
+    label.className = 'emoji-category-label';
+    label.textContent = cat;
+    container.appendChild(label);
+    const grid = document.createElement('div');
+    grid.className = 'emoji-grid';
+    emojis.forEach(emoji => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'emoji-option';
+      btn.textContent = emoji;
+      btn.onclick = () => { setIcon(emoji); closeEmojiPicker(); };
+      grid.appendChild(btn);
+    });
+    container.appendChild(grid);
+  });
+}
+
+function filterEmojis() {
+  const q = document.getElementById('emoji-search').value.toLowerCase();
+  if (!q) { renderEmojiGrid(EMOJI_DATA); return; }
+  const filtered = allEmojis.filter(({ e }) => e.includes(q));
+  const result = { 'Resultados': filtered.map(({ e }) => e) };
+  if (!filtered.length) result['Resultados'] = [];
+  renderEmojiGrid(result);
+}
+
+function toggleEmojiPicker(e) {
+  e.stopPropagation();
+  document.getElementById('emoji-picker').classList.toggle('open');
+}
+
+function closeEmojiPicker() {
+  document.getElementById('emoji-picker').classList.remove('open');
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('from-input').addEventListener('input', updateConfig);
@@ -74,17 +201,23 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('message-input').addEventListener('input', updateConfig);
   document.getElementById('signature-input').addEventListener('input', updateConfig);
 
-  renderPreview();
+  initBgButtons();
+  initEmojiPicker();
 
-  if (window.innerWidth < 900) {
-    document.getElementById('mobile-preview-btn').style.display = 'flex';
-  }
-
-  window.addEventListener('resize', () => {
-    const isMobile = window.innerWidth < 900;
-    document.getElementById('mobile-preview-btn').style.display = isMobile ? 'flex' : 'none';
-    if (!isMobile) hideMobilePreview();
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.emoji-picker-wrapper')) closeEmojiPicker();
   });
+
+  document.getElementById('icon-crop-container').addEventListener('click', () => {
+    if (cardConfig.iconImageSrc) {
+      cardConfig.iconType = 'image';
+      cardConfig.icon = cardConfig.iconImageSrc;
+      document.querySelectorAll('.icon-btn').forEach(btn => btn.classList.remove('active'));
+      renderPreview();
+    }
+  });
+
+  renderPreview();
 });
 
 function setHeaderType(type) {
@@ -106,7 +239,6 @@ function setTexture(texture) {
 function setIcon(icon) {
   cardConfig.icon = icon;
   cardConfig.iconType = 'emoji';
-  cardConfig.iconImageSrc = '';
   document.querySelectorAll('.icon-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.icon === icon);
   });
@@ -133,30 +265,6 @@ function updateConfig() {
   renderPreview();
 }
 
-// Custom icon
-function toggleCustomIcon() {
-  const panel = document.getElementById('custom-icon-panel');
-  panel.classList.toggle('open');
-}
-
-function showCustomIconTab(tab) {
-  document.querySelectorAll('.custom-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById(`custom-tab-${tab}`).classList.add('active');
-  document.querySelectorAll('.custom-icon-tabs button').forEach((btn, i) => {
-    btn.classList.toggle('active', (tab === 'emoji' && i === 0) || (tab === 'image' && i === 1));
-  });
-}
-
-function applyCustomEmoji() {
-  const val = document.getElementById('custom-emoji-input').value.trim();
-  if (!val) return;
-  cardConfig.icon = val;
-  cardConfig.iconType = 'emoji';
-  cardConfig.iconImageSrc = '';
-  document.querySelectorAll('.icon-btn').forEach(btn => btn.classList.remove('active'));
-  document.getElementById('custom-icon-btn').classList.add('active');
-  renderPreview();
-}
 
 function handleIconImageUpload(event) {
   const file = event.target.files[0];
@@ -183,10 +291,12 @@ function handleIconImageUpload(event) {
 
     document.getElementById('icon-pos-x').value = 50;
     document.getElementById('icon-pos-y').value = 50;
+    document.getElementById('icon-zoom').value = 100;
     updateIconCrop();
 
+    document.getElementById('icon-upload-area').style.display = 'none';
+    document.getElementById('icon-image-preview').style.display = 'block';
     document.querySelectorAll('.icon-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById('custom-icon-btn').classList.add('active');
     renderPreview();
   };
   reader.readAsDataURL(file);
@@ -195,11 +305,15 @@ function handleIconImageUpload(event) {
 function updateIconCrop() {
   const x = document.getElementById('icon-pos-x').value;
   const y = document.getElementById('icon-pos-y').value;
+  const zoom = document.getElementById('icon-zoom').value;
   cardConfig.iconPosX = parseInt(x);
   cardConfig.iconPosY = parseInt(y);
+  cardConfig.iconZoom = parseInt(zoom);
 
   const img = document.getElementById('icon-crop-img');
   img.style.objectPosition = `${x}% ${y}%`;
+  img.style.transform = `scale(${zoom / 100})`;
+  img.style.transformOrigin = `${x}% ${y}%`;
 
   renderPreview();
 }
@@ -209,6 +323,7 @@ function removeIconImage() {
   cardConfig.iconImageSrc = '';
   cardConfig.icon = '';
   document.getElementById('icon-image-preview').style.display = 'none';
+  document.getElementById('icon-upload-area').style.display = 'block';
   document.getElementById('icon-image-upload').value = '';
   document.querySelectorAll('.icon-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.icon === '');
@@ -242,7 +357,10 @@ function getBackgroundStyle(config) {
 function renderIconHTML(config) {
   if (!config.icon && !config.iconImageSrc) return '';
   if (config.iconType === 'image' && config.iconImageSrc) {
-    return `<div class="gift-icon-img-wrap"><img src="${config.iconImageSrc}" style="width:100%;height:100%;object-fit:cover;object-position:${config.iconPosX || 50}% ${config.iconPosY || 50}%;border-radius:8px;" alt=""></div>`;
+    const zoom = config.iconZoom || 100;
+    const x = config.iconPosX || 50;
+    const y = config.iconPosY || 50;
+    return `<div class="gift-icon-img-wrap"><img src="${config.iconImageSrc}" style="width:100%;height:100%;object-fit:cover;object-position:${x}% ${y}%;transform:scale(${zoom/100});transform-origin:${x}% ${y}%;" alt=""></div>`;
   }
   return `<div class="gift-icon">${config.icon}</div>`;
 }
@@ -260,13 +378,34 @@ function renderCardHTML(config) {
   }
 
   const bgStyle = getBackgroundStyle(config);
+  const textureClass = config.backgroundType === 'texture' ? ' has-texture' : '';
+
+  const textColor = textureTextColors[config.texture] || '#FFFFFF';
+  const textStyle = `color: ${textColor};`;
+
+  if (showScratchPreview) {
+    return `
+      <div class="gift-card-header" style="background: transparent;">
+        <h2 style="${textStyle}">${headerText}</h2>
+        <p style="${textStyle}">Rasca para descubrir tu sorpresa</p>
+      </div>
+      <div class="gift-card-content${textureClass}" style="background: transparent;">
+        <div class="gift-content" style="visibility: hidden;">
+          ${renderIconHTML(config)}
+          <h3>${config.title || 'Título del regalo'}</h3>
+          <p class="message">${config.message || 'Mensaje del regalo'}</p>
+          ${config.signature ? `<p class="signature">${config.signature}</p>` : ''}
+        </div>
+      </div>
+    `;
+  }
 
   return `
     <div class="gift-card-header" style="background: ${headerColor};">
-      <h2>${headerText}</h2>
-      <p>Rasca para descubrir tu sorpresa</p>
+      <h2 style="${textStyle}">${headerText}</h2>
+      <p style="${textStyle}">Rasca para descubrir tu sorpresa</p>
     </div>
-    <div class="gift-card-content" style="${bgStyle}">
+    <div class="gift-card-content${textureClass}" style="${bgStyle}">
       <div class="gift-content">
         ${renderIconHTML(config)}
         <h3>${config.title || 'Título del regalo'}</h3>
@@ -278,24 +417,39 @@ function renderCardHTML(config) {
 }
 
 function renderPreview() {
+  const scratchGradient = textureHeaderColors[cardConfig.texture] || textureHeaderColors.black;
   [document.getElementById('preview-card'), document.getElementById('mobile-preview-card')]
     .filter(Boolean)
-    .forEach(card => { card.innerHTML = renderCardHTML(cardConfig); });
+    .forEach(card => {
+      card.innerHTML = renderCardHTML(cardConfig);
+      card.style.background = showScratchPreview ? scratchGradient : '';
+    });
 }
 
-// Mobile
-function showMobilePreview() {
+function setScratchPreview(show) {
+  showScratchPreview = show;
+  document.querySelectorAll('.scratch-toggle-check').forEach(cb => cb.checked = show);
   renderPreview();
-  document.getElementById('bottom-sheet-overlay').classList.add('show');
 }
 
-function hideMobilePreview() {
-  document.getElementById('bottom-sheet-overlay').classList.remove('show');
+// Mobile tabs
+function setMobileTab(tab) {
+  const isPreview = tab === 'preview';
+  document.getElementById('editor-layout').style.display = isPreview ? 'none' : '';
+  const previewSection = document.getElementById('mobile-preview-section');
+  previewSection.style.display = isPreview ? 'block' : 'none';
+  document.querySelectorAll('.mobile-tab').forEach(btn => {
+    btn.classList.toggle('active', (btn.textContent.trim() === 'Vista previa') === isPreview);
+  });
+  if (isPreview) renderPreview();
 }
 
 // Generate
 async function generateCard() {
-  const btn = document.getElementById('generate-btn');
+  const isMobile = window.innerWidth < 900;
+  const btn = (isMobile && document.getElementById('mobile-generate-btn'))
+    ? document.getElementById('mobile-generate-btn')
+    : document.getElementById('generate-btn');
   const originalHTML = btn.innerHTML;
 
   btn.disabled = true;
@@ -333,7 +487,6 @@ async function generateCard() {
 
     const data = await response.json();
     generatedCardData = data;
-    hideMobilePreview();
     showResultModal(data);
 
   } catch (error) {
@@ -378,11 +531,7 @@ function animatePreview(card) {
     letter-spacing: 0.1em; text-transform: uppercase;
   `;
 
-  const textureGradients = {
-    silver: 'linear-gradient(135deg, #C0C0C0 0%, #E8E8E8 50%, #A8A8A8 100%)',
-    gold: 'linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #B8860B 100%)',
-    rainbow: 'linear-gradient(135deg, #FF6B9D 0%, #C368E8 50%, #4FACFE 100%)'
-  };
+  const textureGradients = { ...textureHeaderColors };
 
   scratchLayer.style.background = textureGradients[cardConfig.texture];
   scratchLayer.textContent = 'RASCA AQUÍ';
@@ -460,7 +609,6 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     closeResultModal();
     closeEmailModal();
-    hideMobilePreview();
   }
 });
 

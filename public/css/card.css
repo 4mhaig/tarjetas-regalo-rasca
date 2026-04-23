@@ -6,6 +6,7 @@
   border-radius: var(--radius-xl);
   overflow: hidden;
   box-shadow: var(--shadow-lg);
+  position: relative;
 }
 
 .gift-card-header {
@@ -33,11 +34,20 @@
   padding: 32px;
   background: var(--color-bg-secondary);
   min-height: 300px;
+  color: #1A1A1A;
 }
 
 .gift-content {
   text-align: center;
   padding: 32px;
+}
+
+.has-texture .gift-content {
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  margin: 8px;
+  backdrop-filter: blur(2px);
 }
 
 .gift-icon {
@@ -70,19 +80,20 @@
   margin: 0 0 16px;
   font-size: 20px;
   font-weight: 500;
+  color: #1A1A1A;
 }
 
 .gift-content .message {
   margin: 0;
   font-size: 16px;
   line-height: 1.7;
-  color: var(--color-text-secondary);
+  color: #555555;
 }
 
 .gift-content .signature {
   margin: 16px 0 0;
   font-size: 14px;
-  color: var(--color-text-tertiary);
+  color: #888888;
   font-style: italic;
 }
 
