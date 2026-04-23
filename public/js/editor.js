@@ -543,20 +543,15 @@ function animatePreview(card) {
   const scratchLayer = document.createElement('div');
   scratchLayer.style.cssText = `
     position: absolute; inset: 0; z-index: 10;
-    opacity: 1; transition: opacity 1.2s ease-in-out;
+    opacity: 0; transition: opacity 1s ease-in-out;
   `;
   scratchLayer.style.background = textureHeaderColors[cardConfig.texture] || textureHeaderColors.black;
   content.appendChild(scratchLayer);
 
-  function cycle() {
-    scratchLayer.style.opacity = '0';
-    setTimeout(() => {
-      scratchLayer.style.opacity = '1';
-      setTimeout(cycle, 1800);
-    }, 2200);
-  }
-
-  setTimeout(cycle, 800);
+  // Content visible → cover with scratch → reveal content (end)
+  setTimeout(() => { scratchLayer.style.opacity = '1'; }, 1000);
+  setTimeout(() => { scratchLayer.style.opacity = '0'; }, 3000);
+  setTimeout(() => { scratchLayer.remove(); }, 4200);
 }
 
 function copyLink() {
