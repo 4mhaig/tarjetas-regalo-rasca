@@ -85,6 +85,7 @@
 
 .preview-animation-container {
   width: 220px;
+  aspect-ratio: 1;
   overflow: hidden;
   border-radius: var(--radius-lg);
 }
