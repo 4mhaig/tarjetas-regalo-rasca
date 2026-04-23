@@ -19,8 +19,8 @@ const cardSchema = new mongoose.Schema({
   // Estilo
   texture: {
     type: String,
-    enum: ['silver', 'gold', 'rainbow'],
-    default: 'silver'
+    enum: ['silver', 'gold', 'rainbow', 'black', 'copper', 'rosegold', 'holographic', 'emerald'],
+    default: 'black'
   },
   icon: String, // Emoji o vacío si no hay icono
   
