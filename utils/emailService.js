@@ -3,10 +3,19 @@ const { Resend } = require('resend');
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendCardEmail = async (toEmail, cardUrl, cardId, expirationDate, qrCodeBase64) => {
+  const base64Data = qrCodeBase64.replace(/^data:image\/png;base64,/, '');
+
   const { data, error } = await resend.emails.send({
     from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
     to: toEmail,
     subject: 'Tu tarjeta regalo está lista 🎁',
+    attachments: [
+      {
+        filename: 'qr-tarjeta.png',
+        content: base64Data,
+        encoding: 'base64',
+      }
+    ],
     html: `
       <!DOCTYPE html>
       <html>
@@ -45,7 +54,7 @@ const sendCardEmail = async (toEmail, cardUrl, cardId, expirationDate, qrCodeBas
             </p>
             <p style="text-align: center; font-size: 14px; color: #86868B;">También puedes usar este código QR:</p>
             <div class="qr-container">
-              <img src="${qrCodeBase64}" alt="Código QR">
+              <img src="cid:qr-tarjeta.png" alt="Código QR">
             </div>
             <p style="font-size: 14px; color: #86868B; text-align: center;">
               ⏰ Esta tarjeta estará disponible hasta el <strong>${new Date(expirationDate).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>
