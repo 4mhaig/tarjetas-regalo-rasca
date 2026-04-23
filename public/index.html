@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Crea tarjetas de regalo digitales personalizadas con efecto rasca y gana">
   <title>Crea tu Tarjeta Regalo Sorpresa</title>
-  
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="stylesheet" href="/css/editor.css">
   <link rel="stylesheet" href="/css/card.css">
@@ -13,133 +12,165 @@
 </head>
 <body>
   <div class="editor-container">
-    <!-- Header -->
     <header class="editor-header">
       <h1>Crea tu tarjeta regalo sorpresa</h1>
     </header>
 
-    <!-- Layout principal -->
     <div class="editor-layout">
       <!-- Panel de controles -->
       <div class="controls-panel">
-        
-        <!-- Sección 1: Destinatario -->
+
+        <!-- Destinatario -->
         <div class="section-card">
           <h3>Destinatario</h3>
-          
           <div class="field">
             <div class="segmented-control">
               <button type="button" id="btn-generic" class="active" onclick="setHeaderType('generic')">Genérico</button>
               <button type="button" id="btn-personal" onclick="setHeaderType('personal')">Personalizado</button>
             </div>
           </div>
-
-          <div id="personal-fields" style="display: none;">
+          <div id="personal-fields" style="display:none;">
             <div class="field">
-              <label for="from-input">De:</label>
+              <label for="from-input">De</label>
               <input type="text" id="from-input" placeholder="Tu nombre">
             </div>
             <div class="field">
-              <label for="to-input">Para:</label>
+              <label for="to-input">Para</label>
               <input type="text" id="to-input" placeholder="Nombre del destinatario">
             </div>
           </div>
         </div>
 
-        <!-- Sección 2: Estilo -->
+        <!-- Estilo -->
         <div class="section-card">
-          <h3>Estilo</h3>
-          
+          <h3>Estilo del rasca</h3>
           <div class="field">
-            <label>Textura de rasca</label>
             <div class="texture-options">
-              <button type="button" class="texture-btn texture-silver active" data-texture="silver" onclick="setTexture('silver')">
-                <span>Plateada</span>
-              </button>
-              <button type="button" class="texture-btn texture-gold" data-texture="gold" onclick="setTexture('gold')">
-                <span>Dorada</span>
-              </button>
-              <button type="button" class="texture-btn texture-rainbow" data-texture="rainbow" onclick="setTexture('rainbow')">
-                <span>Arcoíris</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Icono (opcional)</label>
-            <div class="icon-options">
-              <button type="button" class="icon-btn no-icon" data-icon="" onclick="setIcon('')"></button>
-              <button type="button" class="icon-btn active" data-icon="🎉" onclick="setIcon('🎉')">🎉</button>
-              <button type="button" class="icon-btn" data-icon="🎁" onclick="setIcon('🎁')">🎁</button>
-              <button type="button" class="icon-btn" data-icon="🎂" onclick="setIcon('🎂')">🎂</button>
-              <button type="button" class="icon-btn" data-icon="❤️" onclick="setIcon('❤️')">❤️</button>
-              <button type="button" class="icon-btn" data-icon="🌟" onclick="setIcon('🌟')">🌟</button>
-              <button type="button" class="icon-btn" data-icon="💝" onclick="setIcon('💝')">💝</button>
+              <button type="button" class="texture-btn texture-silver active has-tooltip" data-texture="silver" data-name="Plateada" onclick="setTexture('silver')"></button>
+              <button type="button" class="texture-btn texture-gold has-tooltip" data-texture="gold" data-name="Dorada" onclick="setTexture('gold')"></button>
+              <button type="button" class="texture-btn texture-rainbow has-tooltip" data-texture="rainbow" data-name="Arcoíris" onclick="setTexture('rainbow')"></button>
             </div>
           </div>
         </div>
 
-        <!-- Sección 3: Fondo -->
+        <!-- Icono -->
+        <div class="section-card">
+          <h3>Icono</h3>
+          <div class="field">
+            <div class="icon-options" id="icon-options">
+              <button type="button" class="icon-btn no-icon has-tooltip" data-icon="" data-name="Sin icono" onclick="setIcon('')">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2l12 12M14 2L2 14"/></svg>
+              </button>
+              <button type="button" class="icon-btn active has-tooltip" data-icon="🎉" data-name="Fiesta" onclick="setIcon('🎉')">🎉</button>
+              <button type="button" class="icon-btn has-tooltip" data-icon="🎁" data-name="Regalo" onclick="setIcon('🎁')">🎁</button>
+              <button type="button" class="icon-btn has-tooltip" data-icon="🎂" data-name="Cumpleaños" onclick="setIcon('🎂')">🎂</button>
+              <button type="button" class="icon-btn has-tooltip" data-icon="❤️" data-name="Amor" onclick="setIcon('❤️')">❤️</button>
+              <button type="button" class="icon-btn has-tooltip" data-icon="🌟" data-name="Estrella" onclick="setIcon('🌟')">🌟</button>
+              <button type="button" class="icon-btn has-tooltip" data-icon="💝" data-name="Corazón" onclick="setIcon('💝')">💝</button>
+              <button type="button" class="icon-btn custom-icon-btn has-tooltip" id="custom-icon-btn" data-name="Personalizar" onclick="toggleCustomIcon()">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 1v12M1 7h12"/></svg>
+              </button>
+            </div>
+
+            <!-- Panel icono personalizado -->
+            <div class="custom-icon-panel" id="custom-icon-panel">
+              <div class="custom-icon-tabs">
+                <button type="button" class="active" onclick="showCustomIconTab('emoji')">Emoji</button>
+                <button type="button" onclick="showCustomIconTab('image')">Imagen</button>
+              </div>
+
+              <div class="custom-tab active" id="custom-tab-emoji">
+                <div class="custom-emoji-row">
+                  <input type="text" id="custom-emoji-input" placeholder="Escribe un emoji..." maxlength="4">
+                  <button type="button" onclick="applyCustomEmoji()">Aplicar</button>
+                </div>
+              </div>
+
+              <div class="custom-tab" id="custom-tab-image">
+                <div class="icon-upload-area">
+                  <input type="file" id="icon-image-upload" accept="image/*" onchange="handleIconImageUpload(event)">
+                  <label class="icon-upload-label" for="icon-image-upload">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 9V1M3 5l4-4 4 4"/><path d="M1 11v1a1 1 0 001 1h10a1 1 0 001-1v-1"/></svg>
+                    Subir imagen
+                  </label>
+                </div>
+                <div class="icon-image-preview" id="icon-image-preview" style="display:none;">
+                  <div class="icon-crop-container" id="icon-crop-container">
+                    <img id="icon-crop-img" src="" alt="">
+                  </div>
+                  <div class="crop-sliders">
+                    <label>Posición horizontal</label>
+                    <input type="range" id="icon-pos-x" min="0" max="100" value="50" oninput="updateIconCrop()">
+                    <label style="margin-top:8px;">Posición vertical</label>
+                    <input type="range" id="icon-pos-y" min="0" max="100" value="50" oninput="updateIconCrop()">
+                  </div>
+                  <button type="button" class="remove-icon-btn" onclick="removeIconImage()">Eliminar imagen</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fondo -->
         <div class="section-card">
           <h3>Fondo</h3>
-          
           <div class="field">
-            <label>Colores sólidos</label>
-            <div class="background-colors">
-              <button type="button" class="bg-color-btn active" data-color="white" data-bg-type="color" data-bg-value="#FFFFFF" onclick="setBackground('color', '#FFFFFF')"></button>
-              <button type="button" class="bg-color-btn" data-color="pink" data-bg-type="color" data-bg-value="#FFE5EC" onclick="setBackground('color', '#FFE5EC')"></button>
-              <button type="button" class="bg-color-btn" data-color="blue" data-bg-type="color" data-bg-value="#E3F2FD" onclick="setBackground('color', '#E3F2FD')"></button>
-              <button type="button" class="bg-color-btn" data-color="lavender" data-bg-type="color" data-bg-value="#F3E5F5" onclick="setBackground('color', '#F3E5F5')"></button>
-              <button type="button" class="bg-color-btn" data-color="peach" data-bg-type="color" data-bg-value="#FFE0B2" onclick="setBackground('color', '#FFE0B2')"></button>
+            <label>Colores</label>
+            <div class="bg-grid" id="bg-colors">
+              <button type="button" class="bg-option-btn active has-tooltip" data-bg-type="color" data-bg-value="#FFFFFF" data-name="Blanco" onclick="setBackground('color','#FFFFFF')" style="background:#FFFFFF;"></button>
+              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="color" data-bg-value="#FFE5EC" data-name="Rosa" onclick="setBackground('color','#FFE5EC')" style="background:#FFE5EC;"></button>
+              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="color" data-bg-value="#E3F2FD" data-name="Azul" onclick="setBackground('color','#E3F2FD')" style="background:#E3F2FD;"></button>
+              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="color" data-bg-value="#F3E5F5" data-name="Lavanda" onclick="setBackground('color','#F3E5F5')" style="background:#F3E5F5;"></button>
+              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="color" data-bg-value="#FFE0B2" data-name="Melocotón" onclick="setBackground('color','#FFE0B2')" style="background:#FFE0B2;"></button>
+              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="color" data-bg-value="#E8F5E9" data-name="Menta" onclick="setBackground('color','#E8F5E9')" style="background:#E8F5E9;"></button>
+              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="color" data-bg-value="#FFF8E1" data-name="Vainilla" onclick="setBackground('color','#FFF8E1')" style="background:#FFF8E1;"></button>
+              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="color" data-bg-value="#1A1A1A" data-name="Negro" onclick="setBackground('color','#1A1A1A')" style="background:#1A1A1A;"></button>
             </div>
           </div>
-
           <div class="field">
-            <label for="image-upload">Imagen personalizada</label>
-            <div class="image-upload">
-              <input type="file" id="image-upload" accept="image/jpeg,image/png,image/webp" onchange="handleImageUpload(event)">
-              <label for="image-upload">
-                <span>📤</span>
-                <span>Subir imagen</span>
-              </label>
-              <div id="image-preview" class="image-preview" style="display: none;"></div>
+            <label>Texturas</label>
+            <div class="bg-grid" id="bg-textures">
+              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="texture" data-bg-value="dots" data-name="Puntos" onclick="setBackground('texture','dots')" style="background-color:#F5F5F5;background-image:radial-gradient(#BBBBBB 1px,transparent 1px);background-size:10px 10px;"></button>
+              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="texture" data-bg-value="grid" data-name="Cuadrícula" onclick="setBackground('texture','grid')" style="background-color:#F5F5F5;background-image:linear-gradient(#CCCCCC 1px,transparent 1px),linear-gradient(90deg,#CCCCCC 1px,transparent 1px);background-size:14px 14px;"></button>
+              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="texture" data-bg-value="lines" data-name="Líneas" onclick="setBackground('texture','lines')" style="background-color:#F5F5F5;background-image:repeating-linear-gradient(0deg,#CCCCCC,#CCCCCC 1px,transparent 1px,transparent 10px);"></button>
+              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="texture" data-bg-value="diagonal" data-name="Diagonal" onclick="setBackground('texture','diagonal')" style="background-color:#FFF8F0;background-image:repeating-linear-gradient(45deg,#E8D5C0 0,#E8D5C0 1px,transparent 0,transparent 50%);background-size:10px 10px;"></button>
+              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="texture" data-bg-value="checker" data-name="Damero" onclick="setBackground('texture','checker')" style="background-color:#F0F0F0;background-image:linear-gradient(45deg,#DDDDDD 25%,transparent 25%),linear-gradient(-45deg,#DDDDDD 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#DDDDDD 75%),linear-gradient(-45deg,transparent 75%,#DDDDDD 75%);background-size:12px 12px;background-position:0 0,0 6px,6px -6px,-6px 0;"></button>
+              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="texture" data-bg-value="paper" data-name="Papel" onclick="setBackground('texture','paper')" style="background-color:#FDF6E3;"></button>
+              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="texture" data-bg-value="noir" data-name="Noir" onclick="setBackground('texture','noir')" style="background-color:#111111;background-image:radial-gradient(#222222 1px,transparent 1px);background-size:12px 12px;"></button>
+              <button type="button" class="bg-option-btn has-tooltip" data-bg-type="texture" data-bg-value="crosshatch" data-name="Malla" onclick="setBackground('texture','crosshatch')" style="background-color:#F5F5F5;background-image:repeating-linear-gradient(0deg,transparent,transparent 9px,#CCCCCC 9px,#CCCCCC 10px),repeating-linear-gradient(90deg,transparent,transparent 9px,#CCCCCC 9px,#CCCCCC 10px);"></button>
             </div>
           </div>
         </div>
 
-        <!-- Sección 4: Contenido -->
+        <!-- Contenido -->
         <div class="section-card">
           <h3>Contenido</h3>
-          
           <div class="field">
             <label for="title-input">Título</label>
-            <input type="text" id="title-input" placeholder="Ej: ¡Feliz Cumpleaños!" value="¡Feliz Cumpleaños!">
+            <input type="text" id="title-input" placeholder="¡Feliz Cumpleaños!" value="¡Feliz Cumpleaños!">
           </div>
-
           <div class="field">
             <label for="message-input">Mensaje</label>
             <textarea id="message-input" placeholder="Escribe tu mensaje especial...">Te regalo una cena especial en tu restaurante favorito. ¡Espero que lo disfrutes tanto como yo disfruto tu compañía!</textarea>
           </div>
-
           <div class="field">
             <label for="signature-input">Firma (opcional)</label>
-            <input type="text" id="signature-input" placeholder="Ej: Con cariño, María" value="Con todo mi cariño ❤️">
+            <input type="text" id="signature-input" placeholder="Con cariño, María" value="Con todo mi cariño ❤️">
           </div>
         </div>
 
-        <!-- Botón generar -->
-        <button type="button" class="btn btn-primary generate-btn" onclick="generateCard()">
-          Generar tarjeta →
+        <!-- Generar -->
+        <button type="button" class="btn btn-primary generate-btn" id="generate-btn" onclick="generateCard()">
+          Generar tarjeta
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
         </button>
       </div>
 
-      <!-- Panel de preview (desktop) -->
+      <!-- Preview -->
       <div class="preview-panel">
         <div class="preview-label">Vista previa</div>
         <div class="preview-card-container">
-          <div id="preview-card" class="gift-card">
-            <!-- Se renderiza dinámicamente con JS -->
-          </div>
+          <div id="preview-card" class="gift-card"></div>
         </div>
       </div>
     </div>
@@ -147,7 +178,7 @@
 
   <!-- Botón flotante mobile -->
   <button type="button" class="floating-preview-btn" id="mobile-preview-btn" onclick="showMobilePreview()">
-    👁️
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 10s3.5-7 9-7 9 7 9 7-3.5 7-9 7-9-7-9-7z"/><circle cx="10" cy="10" r="3"/></svg>
   </button>
 
   <!-- Bottom sheet mobile -->
@@ -157,22 +188,23 @@
       <div class="bottom-sheet-content">
         <div class="bottom-sheet-label">Vista previa</div>
         <div class="preview-card-container">
-          <div id="mobile-preview-card" class="gift-card">
-            <!-- Se renderiza dinámicamente con JS -->
-          </div>
+          <div id="mobile-preview-card" class="gift-card"></div>
         </div>
         <button type="button" class="btn btn-primary generate-btn" onclick="generateCard()">
-          Generar tarjeta →
+          Generar tarjeta
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Modal de resultado -->
+  <!-- Modal resultado -->
   <div class="modal-overlay" id="result-modal">
     <div class="modal-content">
-      <button type="button" class="modal-close" onclick="closeResultModal()">✕</button>
-      
+      <button type="button" class="modal-close" onclick="closeResultModal()">
+        <svg width="14" height="14" viewBox="0 0 14 14" stroke="currentColor" stroke-width="2"><path d="M1 1l12 12M13 1L1 13"/></svg>
+      </button>
+
       <div class="modal-header">
         <h2>Tarjeta creada</h2>
       </div>
@@ -180,9 +212,7 @@
       <div class="modal-body">
         <div class="modal-preview">
           <div class="preview-animation-container">
-            <div id="modal-preview-card" class="gift-card">
-              <!-- Preview con animación -->
-            </div>
+            <div id="modal-preview-card" class="gift-card"></div>
           </div>
           <p class="preview-explanation">El destinatario verá este contenido al rascar</p>
         </div>
@@ -194,26 +224,34 @@
 
           <div class="link-display">
             <a id="card-link" href="#" target="_blank"></a>
-            <span class="copy-icon" onclick="copyLink()" title="Copiar link">📋</span>
-            <div class="copy-tooltip" id="copy-tooltip">¡Copiado!</div>
+            <span class="copy-icon" onclick="copyLink()" title="Copiar link">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="8" height="8" rx="1"/><path d="M10 4V2H2v8h2"/></svg>
+            </span>
+            <div class="copy-tooltip" id="copy-tooltip">Copiado</div>
           </div>
 
-          <button type="button" class="btn btn-primary" onclick="downloadQR()">📥 Descargar QR</button>
-          <button type="button" class="btn" onclick="showEmailModal()">📧 Enviar a mi email</button>
-          
-          <a href="/" class="create-another-link">+ Crear otra tarjeta</a>
+          <button type="button" class="btn btn-primary" onclick="downloadQR()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 1v8M3 6l4 4 4-4"/><path d="M1 11v1a1 1 0 001 1h10a1 1 0 001-1v-1"/></svg>
+            Descargar QR
+          </button>
+          <button type="button" class="btn" onclick="showEmailModal()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="2" width="12" height="9" rx="1"/><path d="M1 3l6 4.5L13 3"/></svg>
+            Enviar por email
+          </button>
+
+          <a href="/" class="create-another-link">Crear otra tarjeta</a>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Modal de email -->
+  <!-- Modal email -->
   <div class="modal-overlay" id="email-modal-overlay">
     <div class="email-modal" id="email-modal" onclick="event.stopPropagation()">
-      <h3>Enviar link por email</h3>
+      <h3>Enviar por email</h3>
       <div class="field">
-        <label for="email-input">Tu email:</label>
-        <input type="email" id="email-input" placeholder="tu-email@ejemplo.com">
+        <label for="email-input">Email del destinatario</label>
+        <input type="email" id="email-input" placeholder="email@ejemplo.com">
       </div>
       <div class="actions">
         <button type="button" class="btn" onclick="closeEmailModal()">Cancelar</button>
