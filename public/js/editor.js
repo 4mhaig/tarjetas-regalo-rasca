@@ -508,8 +508,26 @@ function showResultModal(data) {
   const previewCard = document.getElementById('modal-preview-card');
   previewCard.innerHTML = renderCardHTML(cardConfig);
 
+  const isMobile = window.innerWidth < 640;
+  const canShare = isMobile && !!navigator.share;
+  document.getElementById('share-btn').style.display = canShare ? '' : 'none';
+  document.getElementById('email-btn').style.display = canShare ? 'none' : '';
+
   setTimeout(() => animatePreview(previewCard), 300);
   modal.classList.add('show');
+}
+
+async function shareCard() {
+  if (!generatedCardData) return;
+  try {
+    await navigator.share({
+      title: 'Tarjeta regalo sorpresa',
+      text: '¡Te envío una tarjeta regalo! Ábrela para descubrir tu sorpresa.',
+      url: generatedCardData.url
+    });
+  } catch (err) {
+    if (err.name !== 'AbortError') showEmailModal();
+  }
 }
 
 function closeResultModal() {
