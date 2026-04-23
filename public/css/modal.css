@@ -14,17 +14,13 @@
   padding: 20px;
 }
 
-.modal-overlay.show {
-  opacity: 1;
-  pointer-events: all;
-}
+.modal-overlay.show { opacity: 1; pointer-events: all; }
 
 .modal-content {
   background: white;
   border-radius: var(--radius-2xl);
   width: 100%;
-  max-width: 780px;
-  max-height: calc(100vh - 40px);
+  max-width: 700px;
   overflow: hidden;
   box-shadow: 0 24px 64px rgba(0,0,0,0.25);
   transform: scale(0.95);
@@ -34,7 +30,7 @@
 
 .modal-overlay.show .modal-content { transform: scale(1); }
 
-/* Close icon — no button */
+/* Close icon */
 .modal-close {
   position: absolute;
   top: 16px;
@@ -56,7 +52,7 @@
 /* Header */
 .modal-header {
   text-align: center;
-  padding: 28px 32px 20px;
+  padding: 28px 48px 20px;
 }
 
 .modal-header h2 {
@@ -73,46 +69,82 @@
   line-height: 1.5;
 }
 
-/* Body — centered, not full-width */
+/* Body: two columns, centered, vertically aligned */
 .modal-body {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   gap: 32px;
-  padding: 0 32px 32px;
+  padding: 0 32px 36px;
 }
 
 /* Preview column */
 .modal-preview {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 0 0 260px;
+  flex: 0 0 220px;
 }
 
 .preview-animation-container {
-  width: 260px;
+  width: 220px;
   overflow: hidden;
   border-radius: var(--radius-lg);
 }
 
-.preview-animation-container .gift-card-content {
-  min-height: 140px;
+/* Compact card proportions inside modal */
+.preview-animation-container .gift-card-header {
+  padding: 14px 16px;
 }
 
-.preview-explanation {
+.preview-animation-container .gift-card-header h2 {
+  font-size: 14px;
+}
+
+.preview-animation-container .gift-card-header p {
+  font-size: 11px;
+  margin-top: 3px;
+}
+
+.preview-animation-container .gift-card-content {
+  min-height: 0;
+  padding: 16px;
+}
+
+.preview-animation-container .gift-content {
+  padding: 12px;
+}
+
+.preview-animation-container .gift-icon {
+  width: 56px;
+  height: 56px;
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.preview-animation-container .gift-icon-img-wrap {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 10px;
+}
+
+.preview-animation-container .gift-content h3 {
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.preview-animation-container .gift-content .message {
   font-size: 12px;
-  color: #BBB;
-  text-align: center;
-  margin-top: 8px;
   line-height: 1.5;
+}
+
+.preview-animation-container .gift-content .signature {
+  font-size: 11px;
+  margin-top: 8px;
 }
 
 /* Actions column */
 .modal-actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
   flex: 0 0 240px;
   align-items: center;
 }
@@ -137,7 +169,6 @@
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 4px 0;
 }
 
 .link-display a {
@@ -160,7 +191,7 @@
 
 .link-display .copy-icon:hover { color: #7A6535; }
 
-/* Buttons — dark bg, white text */
+/* Buttons */
 .modal-actions .btn {
   width: 100%;
   height: 42px;
@@ -251,11 +282,8 @@
 .email-modal .actions .btn-primary { background: #C0B283; color: #1A1A1A; border-color: #C0B283; }
 
 /* Mobile */
-@media (max-width: 640px) {
-  .modal-overlay {
-    padding: 0;
-    align-items: flex-end;
-  }
+@media (max-width: 600px) {
+  .modal-overlay { padding: 0; align-items: flex-end; }
 
   .modal-content {
     max-width: 100%;
@@ -267,15 +295,33 @@
 
   .modal-overlay.show .modal-content { transform: translateY(0); }
 
+  .modal-header { padding: 24px 24px 16px; }
+
   .modal-body {
     flex-direction: column;
     align-items: center;
-    padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+    padding: 0 24px calc(32px + env(safe-area-inset-bottom, 0px));
+    gap: 24px;
   }
 
   .modal-preview { flex: none; width: 100%; }
-  .preview-animation-container { width: 100%; }
-  .preview-animation-container .gift-card-content { min-height: 200px; }
+
+  .preview-animation-container {
+    width: 100%;
+  }
+
+  /* Restore normal card size on mobile */
+  .preview-animation-container .gift-card-header { padding: 20px 24px; }
+  .preview-animation-container .gift-card-header h2 { font-size: 18px; }
+  .preview-animation-container .gift-card-header p { font-size: 13px; margin-top: 6px; }
+  .preview-animation-container .gift-card-content { min-height: 200px; padding: 24px; }
+  .preview-animation-container .gift-content { padding: 20px; }
+  .preview-animation-container .gift-icon { width: 80px; height: 80px; font-size: 40px; margin-bottom: 16px; }
+  .preview-animation-container .gift-icon-img-wrap { width: 80px; height: 80px; margin-bottom: 16px; }
+  .preview-animation-container .gift-content h3 { font-size: 17px; }
+  .preview-animation-container .gift-content .message { font-size: 14px; }
+  .preview-animation-container .gift-content .signature { font-size: 13px; }
+
   .modal-actions { flex: none; width: 100%; }
   .qr-code { width: 130px; height: 130px; }
 }
