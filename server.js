@@ -11,26 +11,25 @@ const cardRoutes = require('./routes/cards');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.set('trust proxy', 1);
+
 // Conectar a MongoDB
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGODB_URI)
 .then(() => console.log('✅ Conectado a MongoDB'))
 .catch(err => console.error('❌ Error conectando a MongoDB:', err));
 
 // Middlewares
 app.use(helmet({
-  contentSecurityPolicy: false // Desactivar CSP para permitir inline styles
+  contentSecurityPolicy: false
 }));
 app.use(cors());
-app.use(express.json({ limit: '5mb' })); // Para base64 de imágenes
+app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100 // Límite de 100 requests por IP
+  windowMs: 15 * 60 * 1000,
+  max: 100
 });
 app.use('/api/', limiter);
 
