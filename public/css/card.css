@@ -1,0 +1,211 @@
+/* Tarjeta de regalo */
+.gift-card {
+  max-width: 500px;
+  width: 100%;
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.gift-card-header {
+  padding: 24px;
+  text-align: center;
+  color: white;
+  background: var(--gradient-purple);
+}
+
+.gift-card-header h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 500;
+  color: white;
+}
+
+.gift-card-header p {
+  margin: 8px 0 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.gift-card-content {
+  position: relative;
+  padding: 32px;
+  background: var(--color-bg-secondary);
+  min-height: 300px;
+}
+
+.gift-content {
+  text-align: center;
+  padding: 32px;
+}
+
+.gift-icon {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 24px;
+  background: #FFD700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+}
+
+.gift-content h3 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.gift-content .message {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+.gift-content .signature {
+  margin: 16px 0 0;
+  font-size: 14px;
+  color: var(--color-text-tertiary);
+  font-style: italic;
+}
+
+/* Canvas de rasca */
+#scratch-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+#scratch-canvas:active {
+  cursor: grabbing;
+}
+
+/* Barra de progreso */
+.progress-section {
+  padding: 16px 24px;
+  background: var(--color-bg-primary);
+  border-top: 1px solid var(--color-border-primary);
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.progress-bar-bg {
+  height: 6px;
+  background: var(--color-bg-tertiary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--gradient-accent);
+  transition: width 0.3s ease;
+}
+
+/* Botón descargar imagen */
+.download-btn-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-slow);
+  z-index: 100;
+}
+
+.download-btn-overlay.show {
+  opacity: 1;
+  pointer-events: all;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.download-btn-overlay button {
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  background: var(--gradient-accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.download-btn-overlay button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Página de tarjeta expirada */
+.expired-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--spacing-xl);
+  text-align: center;
+}
+
+.expired-icon {
+  font-size: 80px;
+  margin-bottom: var(--spacing-lg);
+  opacity: 0.5;
+}
+
+.expired-container h2 {
+  margin: 0 0 var(--spacing-md);
+  font-size: 28px;
+}
+
+.expired-container p {
+  margin: 0 0 var(--spacing-xl);
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  max-width: 400px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .gift-card {
+    border-radius: 0;
+    box-shadow: none;
+  }
+  
+  .gift-card-header {
+    padding: 20px;
+  }
+  
+  .gift-card-header h2 {
+    font-size: 20px;
+  }
+  
+  .gift-card-content {
+    padding: 24px;
+  }
+  
+  .gift-content {
+    padding: 24px;
+  }
+  
+  .gift-icon {
+    width: 100px;
+    height: 100px;
+    font-size: 50px;
+  }
+}

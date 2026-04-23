@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Crea tarjetas de regalo digitales personalizadas con efecto rasca y gana">
+  <title>Crea tu Tarjeta Regalo Sorpresa</title>
+  
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/editor.css">
+  <link rel="stylesheet" href="/css/card.css">
+  <link rel="stylesheet" href="/css/modal.css">
+</head>
+<body>
+  <div class="editor-container">
+    <!-- Header -->
+    <header class="editor-header">
+      <h1>Crea tu tarjeta regalo sorpresa</h1>
+    </header>
+
+    <!-- Layout principal -->
+    <div class="editor-layout">
+      <!-- Panel de controles -->
+      <div class="controls-panel">
+        
+        <!-- Sección 1: Destinatario -->
+        <div class="section-card">
+          <h3>Destinatario</h3>
+          
+          <div class="field">
+            <div class="segmented-control">
+              <button type="button" id="btn-generic" class="active" onclick="setHeaderType('generic')">Genérico</button>
+              <button type="button" id="btn-personal" onclick="setHeaderType('personal')">Personalizado</button>
+            </div>
+          </div>
+
+          <div id="personal-fields" style="display: none;">
+            <div class="field">
+              <label for="from-input">De:</label>
+              <input type="text" id="from-input" placeholder="Tu nombre">
+            </div>
+            <div class="field">
+              <label for="to-input">Para:</label>
+              <input type="text" id="to-input" placeholder="Nombre del destinatario">
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección 2: Estilo -->
+        <div class="section-card">
+          <h3>Estilo</h3>
+          
+          <div class="field">
+            <label>Textura de rasca</label>
+            <div class="texture-options">
+              <button type="button" class="texture-btn texture-silver active" data-texture="silver" onclick="setTexture('silver')">
+                <span>Plateada</span>
+              </button>
+              <button type="button" class="texture-btn texture-gold" data-texture="gold" onclick="setTexture('gold')">
+                <span>Dorada</span>
+              </button>
+              <button type="button" class="texture-btn texture-rainbow" data-texture="rainbow" onclick="setTexture('rainbow')">
+                <span>Arcoíris</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Icono (opcional)</label>
+            <div class="icon-options">
+              <button type="button" class="icon-btn no-icon" data-icon="" onclick="setIcon('')"></button>
+              <button type="button" class="icon-btn active" data-icon="🎉" onclick="setIcon('🎉')">🎉</button>
+              <button type="button" class="icon-btn" data-icon="🎁" onclick="setIcon('🎁')">🎁</button>
+              <button type="button" class="icon-btn" data-icon="🎂" onclick="setIcon('🎂')">🎂</button>
+              <button type="button" class="icon-btn" data-icon="❤️" onclick="setIcon('❤️')">❤️</button>
+              <button type="button" class="icon-btn" data-icon="🌟" onclick="setIcon('🌟')">🌟</button>
+              <button type="button" class="icon-btn" data-icon="💝" onclick="setIcon('💝')">💝</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección 3: Fondo -->
+        <div class="section-card">
+          <h3>Fondo</h3>
+          
+          <div class="field">
+            <label>Colores sólidos</label>
+            <div class="background-colors">
+              <button type="button" class="bg-color-btn active" data-color="white" data-bg-type="color" data-bg-value="#FFFFFF" onclick="setBackground('color', '#FFFFFF')"></button>
+              <button type="button" class="bg-color-btn" data-color="pink" data-bg-type="color" data-bg-value="#FFE5EC" onclick="setBackground('color', '#FFE5EC')"></button>
+              <button type="button" class="bg-color-btn" data-color="blue" data-bg-type="color" data-bg-value="#E3F2FD" onclick="setBackground('color', '#E3F2FD')"></button>
+              <button type="button" class="bg-color-btn" data-color="lavender" data-bg-type="color" data-bg-value="#F3E5F5" onclick="setBackground('color', '#F3E5F5')"></button>
+              <button type="button" class="bg-color-btn" data-color="peach" data-bg-type="color" data-bg-value="#FFE0B2" onclick="setBackground('color', '#FFE0B2')"></button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="image-upload">Imagen personalizada</label>
+            <div class="image-upload">
+              <input type="file" id="image-upload" accept="image/jpeg,image/png,image/webp" onchange="handleImageUpload(event)">
+              <label for="image-upload">
+                <span>📤</span>
+                <span>Subir imagen</span>
+              </label>
+              <div id="image-preview" class="image-preview" style="display: none;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección 4: Contenido -->
+        <div class="section-card">
+          <h3>Contenido</h3>
+          
+          <div class="field">
+            <label for="title-input">Título</label>
+            <input type="text" id="title-input" placeholder="Ej: ¡Feliz Cumpleaños!" value="¡Feliz Cumpleaños!">
+          </div>
+
+          <div class="field">
+            <label for="message-input">Mensaje</label>
+            <textarea id="message-input" placeholder="Escribe tu mensaje especial...">Te regalo una cena especial en tu restaurante favorito. ¡Espero que lo disfrutes tanto como yo disfruto tu compañía!</textarea>
+          </div>
+
+          <div class="field">
+            <label for="signature-input">Firma (opcional)</label>
+            <input type="text" id="signature-input" placeholder="Ej: Con cariño, María" value="Con todo mi cariño ❤️">
+          </div>
+        </div>
+
+        <!-- Botón generar -->
+        <button type="button" class="btn btn-primary generate-btn" onclick="generateCard()">
+          Generar tarjeta →
+        </button>
+      </div>
+
+      <!-- Panel de preview (desktop) -->
+      <div class="preview-panel">
+        <div class="preview-label">Vista previa</div>
+        <div class="preview-card-container">
+          <div id="preview-card" class="gift-card">
+            <!-- Se renderiza dinámicamente con JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botón flotante mobile -->
+  <button type="button" class="floating-preview-btn" id="mobile-preview-btn" onclick="showMobilePreview()">
+    👁️
+  </button>
+
+  <!-- Bottom sheet mobile -->
+  <div class="bottom-sheet-overlay" id="bottom-sheet-overlay" onclick="hideMobilePreview()">
+    <div class="bottom-sheet" onclick="event.stopPropagation()">
+      <div class="bottom-sheet-handle"></div>
+      <div class="bottom-sheet-content">
+        <div class="bottom-sheet-label">Vista previa</div>
+        <div class="preview-card-container">
+          <div id="mobile-preview-card" class="gift-card">
+            <!-- Se renderiza dinámicamente con JS -->
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary generate-btn" onclick="generateCard()">
+          Generar tarjeta →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de resultado -->
+  <div class="modal-overlay" id="result-modal">
+    <div class="modal-content">
+      <button type="button" class="modal-close" onclick="closeResultModal()">✕</button>
+      
+      <div class="modal-header">
+        <h2>Tarjeta creada</h2>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-preview">
+          <div class="preview-animation-container">
+            <div id="modal-preview-card" class="gift-card">
+              <!-- Preview con animación -->
+            </div>
+          </div>
+          <p class="preview-explanation">El destinatario verá este contenido al rascar</p>
+        </div>
+
+        <div class="modal-actions">
+          <div class="qr-container">
+            <img id="qr-code-image" class="qr-code" src="" alt="Código QR">
+          </div>
+
+          <div class="link-display">
+            <a id="card-link" href="#" target="_blank"></a>
+            <span class="copy-icon" onclick="copyLink()" title="Copiar link">📋</span>
+            <div class="copy-tooltip" id="copy-tooltip">¡Copiado!</div>
+          </div>
+
+          <button type="button" class="btn btn-primary" onclick="downloadQR()">📥 Descargar QR</button>
+          <button type="button" class="btn" onclick="showEmailModal()">📧 Enviar a mi email</button>
+          
+          <a href="/" class="create-another-link">+ Crear otra tarjeta</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de email -->
+  <div class="modal-overlay" id="email-modal-overlay">
+    <div class="email-modal" id="email-modal" onclick="event.stopPropagation()">
+      <h3>Enviar link por email</h3>
+      <div class="field">
+        <label for="email-input">Tu email:</label>
+        <input type="email" id="email-input" placeholder="tu-email@ejemplo.com">
+      </div>
+      <div class="actions">
+        <button type="button" class="btn" onclick="closeEmailModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="sendEmail()">Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/editor.js"></script>
+</body>
+</html>

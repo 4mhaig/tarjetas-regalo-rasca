@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tarjeta de regalo sorpresa">
+  <title>Tarjeta de Regalo</title>
+  
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/card.css">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <div id="card-container" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
+      <!-- La tarjeta se renderiza aquí dinámicamente -->
+    </div>
+  </div>
+
+  <script>
+    // Obtener ID de la tarjeta desde la URL
+    const cardId = window.location.pathname.split('/').pop();
+    let cardData = null;
+
+    // Cargar tarjeta
+    async function loadCard() {
+      try {
+        const response = await fetch(`/api/cards/${cardId}`);
+        
+        if (!response.ok) {
+          showExpired();
+          return;
+        }
+        
+        const data = await response.json();
+        cardData = data.card;
+        
+        renderCard(cardData);
+        initScratchEffect();
+        
+      } catch (error) {
+        console.error('Error cargando tarjeta:', error);
+        showExpired();
+      }
+    }
+
+    // Renderizar tarjeta
+    function renderCard(card) {
+      const headerColors = {
+        silver: 'linear-gradient(135deg, #534AB7 0%, #7F77DD 100%)',
+        gold: 'linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)',
+        rainbow: 'linear-gradient(135deg, #FF6B9D 0%, #C368E8 50%, #4FACFE 100%)'
+      };
+      
+      const headerColor = headerColors[card.texture];
+      
+      let headerText = '';
+      if (card.headerType === 'personal' && card.from && card.to) {
+        headerText = card.icon ? `${card.icon} De ${card.from} para ${card.to}` : `De ${card.from} para ${card.to}`;
+      } else if (card.headerType === 'personal' && card.to) {
+        headerText = card.icon ? `${card.icon} Para ${card.to}` : `Para ${card.to}`;
+      } else {
+        headerText = card.icon ? `${card.icon} Tarjeta de Regalo` : 'Tarjeta de Regalo';
+      }
+      
+      const bgStyle = card.backgroundType === 'color' 
+        ? `background: ${card.backgroundValue};`
+        : card.backgroundType === 'image'
+        ? `background-image: url('${card.backgroundValue}'); background-size: cover; background-position: center;`
+        : '';
+      
+      const html = `
+        <div class="gift-card">
+          <div class="gift-card-header" id="card-header" style="background: ${headerColor};">
+            <h2>${headerText}</h2>
+            <p>Rasca para descubrir tu sorpresa</p>
+          </div>
+          <div class="gift-card-content" id="card-content" style="${bgStyle}">
+            <div class="gift-content" id="gift-content">
+              ${card.icon ? `<div class="gift-icon">${card.icon}</div>` : ''}
+              <h3>${card.title}</h3>
+              <p class="message">${card.message}</p>
+              ${card.signature ? `<p class="signature">${card.signature}</p>` : ''}
+            </div>
+            <canvas id="scratch-canvas"></canvas>
+            <div class="download-btn-overlay" id="download-overlay">
+              <button onclick="downloadCardImage()">💾 Guardar como recuerdo</button>
+            </div>
+          </div>
+          <div class="progress-section">
+            <div class="progress-info">
+              <span>Progreso</span>
+              <span id="progress-text">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar" id="progress-bar"></div>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('card-container').innerHTML = html;
+    }
+
+    // Mostrar página de tarjeta expirada
+    function showExpired() {
+      document.getElementById('card-container').innerHTML = `
+        <div class="expired-container">
+          <div class="expired-icon">😢</div>
+          <h2>Esta tarjeta ha expirado</h2>
+          <p>Las tarjetas de regalo están disponibles durante 30 días desde su creación.</p>
+          <a href="/" class="btn btn-primary">Crear una nueva tarjeta</a>
+        </div>
+      `;
+    }
+
+    // Inicializar efecto de rasca
+    function initScratchEffect() {
+      const canvas = document.getElementById('scratch-canvas');
+      const ctx = canvas.getContext('2d');
+      const giftContent = document.getElementById('gift-content');
+      const progressBar = document.getElementById('progress-bar');
+      const progressText = document.getElementById('progress-text');
+      const cardHeader = document.getElementById('card-header');
+      const cardContent = document.getElementById('card-content');
+      
+      let isDrawing = false;
+      let lastX = 0;
+      let lastY = 0;
+      let scratched = 0;
+      let isFullyRevealed = false;
+      
+      function initCanvas() {
+        const rect = giftContent.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        
+        // Gradientes según textura
+        const textureGradients = {
+          silver: ['#C0C0C0', '#E8E8E8', '#A8A8A8'],
+          gold: ['#D4AF37', '#FFD700', '#B8860B'],
+          rainbow: ['#FF6B9D', '#C368E8', '#4FACFE']
+        };
+        
+        const colors = textureGradients[cardData.texture];
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, colors[0]);
+        gradient.addColorStop(0.5, colors[1]);
+        gradient.addColorStop(1, colors[2]);
+        
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Texto "RASCA AQUÍ"
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.font = 'bold 24px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('RASCA AQUÍ', canvas.width / 2, canvas.height / 2);
+        
+        // Puntos decorativos
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        for (let i = 0; i < 100; i++) {
+          ctx.beginPath();
+          ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        
+        scratched = 0;
+        updateProgress(0);
+      }
+      
+      function getEventPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        
+        let clientX, clientY;
+        if (e.touches && e.touches[0]) {
+          clientX = e.touches[0].clientX;
+          clientY = e.touches[0].clientY;
+        } else {
+          clientX = e.clientX;
+          clientY = e.clientY;
+        }
+        
+        return {
+          x: (clientX - rect.left) * scaleX,
+          y: (clientY - rect.top) * scaleY
+        };
+      }
+      
+      function startDrawing(e) {
+        e.preventDefault();
+        isDrawing = true;
+        const pos = getEventPos(e);
+        lastX = pos.x;
+        lastY = pos.y;
+        
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 25, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      
+      function draw(e) {
+        if (!isDrawing) return;
+        e.preventDefault();
+        
+        const pos = getEventPos(e);
+        
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.lineWidth = 50;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        
+        lastX = pos.x;
+        lastY = pos.y;
+        
+        if (Math.random() < 0.1) {
+          calculateProgress();
+        }
+      }
+      
+      function stopDrawing() {
+        if (!isDrawing) return;
+        isDrawing = false;
+        calculateProgress();
+      }
+      
+      function calculateProgress() {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        let transparent = 0;
+        
+        for (let i = 3; i < imageData.data.length; i += 4) {
+          if (imageData.data[i] < 128) {
+            transparent++;
+          }
+        }
+        
+        const totalPixels = canvas.width * canvas.height;
+        const percent = Math.round((transparent / totalPixels) * 100);
+        
+        updateProgress(percent);
+        
+        // Auto-revelar al 65% (actualizado desde 60%)
+        if (percent > 65 && !isFullyRevealed) {
+          revealAll();
+        }
+      }
+      
+      function updateProgress(percent) {
+        scratched = percent;
+        progressBar.style.width = percent + '%';
+        progressText.textContent = percent + '%';
+        
+        // Mostrar botón de descarga al 100%
+        if (percent >= 100 && !isFullyRevealed) {
+          setTimeout(() => {
+            document.getElementById('download-overlay').classList.add('show');
+          }, 500);
+        }
+      }
+      
+      function revealAll() {
+        isFullyRevealed = true;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        updateProgress(100);
+        
+        // Cambiar fondo del header
+        if (cardData.backgroundType === 'color') {
+          cardHeader.style.background = cardData.backgroundValue;
+        } else if (cardData.backgroundType === 'image') {
+          cardHeader.style.backgroundImage = `url('${cardData.backgroundValue}')`;
+          cardHeader.style.backgroundSize = 'cover';
+          cardHeader.style.backgroundPosition = 'center';
+        }
+      }
+      
+      // Event listeners
+      canvas.addEventListener('mousedown', startDrawing);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('mouseup', stopDrawing);
+      canvas.addEventListener('mouseleave', stopDrawing);
+      
+      canvas.addEventListener('touchstart', startDrawing, { passive: false });
+      canvas.addEventListener('touchmove', draw, { passive: false });
+      canvas.addEventListener('touchend', stopDrawing);
+      
+      // Inicializar
+      initCanvas();
+      
+      // Responsive
+      window.addEventListener('resize', initCanvas);
+    }
+
+    // Descargar imagen de la tarjeta
+    async function downloadCardImage() {
+      try {
+        const cardElement = document.querySelector('.gift-card');
+        const canvas = await html2canvas(cardElement, {
+          backgroundColor: '#f5f5f5',
+          scale: 2
+        });
+        
+        const link = document.createElement('a');
+        link.download = `tarjeta-regalo-${cardId}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      } catch (error) {
+        console.error('Error descargando imagen:', error);
+        alert('Error al descargar la imagen');
+      }
+    }
+
+    // Cargar tarjeta al iniciar
+    loadCard();
+  </script>
+</body>
+</html>

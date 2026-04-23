@@ -1,0 +1,308 @@
+/* Editor Layout */
+.editor-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+}
+
+.editor-header {
+  text-align: center;
+  padding: var(--spacing-3xl) 0;
+}
+
+.editor-header h1 {
+  margin: 0;
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+
+.editor-layout {
+  display: grid;
+  grid-template-columns: 40% 60%;
+  gap: var(--spacing-2xl);
+  align-items: start;
+}
+
+/* Panel de controles */
+.controls-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  position: relative;
+}
+
+/* Secciones (cards) */
+.section-card {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+}
+
+.section-card h3 {
+  margin: 0 0 var(--spacing-md);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.section-card .field {
+  margin-bottom: var(--spacing-md);
+}
+
+.section-card .field:last-child {
+  margin-bottom: 0;
+}
+
+/* Botones de textura */
+.texture-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.texture-btn {
+  height: 80px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+}
+
+.texture-btn.texture-silver {
+  background: linear-gradient(135deg, #C0C0C0 0%, #E8E8E8 50%, #A8A8A8 100%);
+}
+
+.texture-btn.texture-gold {
+  background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #B8860B 100%);
+}
+
+.texture-btn.texture-rainbow {
+  background: linear-gradient(135deg, #FF6B9D 0%, #C368E8 50%, #4FACFE 100%);
+}
+
+.texture-btn:hover {
+  transform: scale(1.03);
+}
+
+.texture-btn.active {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(91, 127, 255, 0.1);
+}
+
+.texture-btn span {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.7);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+/* Botones de iconos */
+.icon-options {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--spacing-xs);
+}
+
+.icon-btn {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  font-size: 28px;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.icon-btn.no-icon {
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--color-border-primary);
+}
+
+.icon-btn:hover {
+  transform: scale(1.05);
+}
+
+.icon-btn.active {
+  border-color: var(--color-accent);
+  background: rgba(91, 127, 255, 0.05);
+}
+
+/* Botones de fondo - Texturas */
+.background-textures {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.bg-texture-btn {
+  height: 80px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+}
+
+.bg-texture-btn:hover {
+  transform: scale(1.02);
+}
+
+.bg-texture-btn.active {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(91, 127, 255, 0.1);
+}
+
+/* Botones de fondo - Colores */
+.background-colors {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.bg-color-btn {
+  width: 48px;
+  height: 48px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.bg-color-btn:hover {
+  transform: scale(1.1);
+}
+
+.bg-color-btn.active {
+  border-color: var(--color-text-primary);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.bg-color-btn[data-color="white"] {
+  background: #FFFFFF;
+  border: 2px solid var(--color-border-primary);
+}
+
+.bg-color-btn[data-color="pink"] {
+  background: #FFE5EC;
+}
+
+.bg-color-btn[data-color="blue"] {
+  background: #E3F2FD;
+}
+
+.bg-color-btn[data-color="lavender"] {
+  background: #F3E5F5;
+}
+
+.bg-color-btn[data-color="peach"] {
+  background: #FFE0B2;
+}
+
+/* Upload de imagen */
+.image-upload {
+  position: relative;
+}
+
+.image-upload input[type="file"] {
+  display: none;
+}
+
+.image-upload label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: 14px;
+  border: 1px dashed var(--color-border-secondary);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.image-upload label:hover {
+  border-color: var(--color-accent);
+  background: rgba(91, 127, 255, 0.02);
+}
+
+.image-preview {
+  margin-top: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  max-height: 100px;
+}
+
+.image-preview img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Botón generar (sticky) */
+.generate-btn {
+  position: sticky;
+  bottom: var(--spacing-md);
+  width: 100%;
+  height: 56px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: var(--spacing-xl);
+}
+
+/* Panel de preview */
+.preview-panel {
+  position: sticky;
+  top: var(--spacing-lg);
+}
+
+.preview-label {
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xl);
+}
+
+.preview-card-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 600px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .editor-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .preview-panel {
+    position: static;
+    display: none; /* Se mostrará en bottom sheet */
+  }
+  
+  .editor-header h1 {
+    font-size: 32px;
+  }
+  
+  .generate-btn {
+    position: static;
+  }
+}
