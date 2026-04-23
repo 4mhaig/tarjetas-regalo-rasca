@@ -8,8 +8,29 @@
   
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="stylesheet" href="/css/card.css">
-  
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    /* Keep rounded corners on mobile for the card page */
+    @media (max-width: 768px) {
+      .gift-card {
+        border-radius: var(--radius-xl) !important;
+        box-shadow: var(--shadow-lg) !important;
+      }
+    }
+    /* Shine overlay — sweeps once on load */
+    .scratch-shine {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 45%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+      animation: shimmer 1.2s ease-in-out 0.4s both;
+      pointer-events: none;
+      z-index: 15;
+    }
+  </style>
 </head>
 <body>
   <div id="app">
@@ -90,6 +111,7 @@
 
       const html = `
         <div class="gift-card">
+          <div class="scratch-shine"></div>
           <div class="gift-card-header" id="card-header" style="background: ${headerColor};">
             <h2>${headerText}</h2>
             <p>Rasca para descubrir tu sorpresa</p>
