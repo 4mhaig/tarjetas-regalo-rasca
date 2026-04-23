@@ -13,7 +13,7 @@
 </head>
 <body>
   <div id="app">
-    <div id="card-container" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
+    <div id="card-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
       <!-- La tarjeta se renderiza aquí dinámicamente -->
     </div>
   </div>
@@ -52,14 +52,14 @@
     // Renderizar tarjeta
     function renderCard(card) {
       const headerColors = {
-        silver:      'linear-gradient(135deg, #534AB7 0%, #7F77DD 100%)',
-        gold:        'linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)',
+        silver:      'linear-gradient(135deg, #8A8A8A 0%, #D8D8D8 50%, #A0A0A0 100%)',
+        gold:        'linear-gradient(135deg, #B8960C 0%, #FFD700 50%, #C8A400 100%)',
         rainbow:     'linear-gradient(135deg, #FF6B9D 0%, #C368E8 50%, #4FACFE 100%)',
-        black:       'linear-gradient(135deg, #1A1A1A 0%, #333333 100%)',
-        copper:      'linear-gradient(135deg, #8B4513 0%, #CD7F32 100%)',
-        rosegold:    'linear-gradient(135deg, #B5606A 0%, #E8A0A8 100%)',
-        holographic: 'linear-gradient(135deg, #6A3DB8 0%, #9B6FE8 100%)',
-        emerald:     'linear-gradient(135deg, #1B6B3A 0%, #2EAE62 100%)',
+        copper:      'linear-gradient(135deg, #B87333 0%, #E8A050 50%, #A0602A 100%)',
+        rosegold:    'linear-gradient(135deg, #C8858A 0%, #F5C8C8 50%, #D4909A 100%)',
+        black:       'linear-gradient(135deg, #1A1A1A 0%, #555555 50%, #333333 100%)',
+        holographic: 'linear-gradient(135deg, #FF6B9D 0%, #FFD700 25%, #6BCB77 50%, #4FACFE 75%, #C368E8 100%)',
+        emerald:     'linear-gradient(135deg, #1B5E20 0%, #4CAF50 50%, #2E7D32 100%)',
       };
       
       const headerColor = headerColors[card.texture];
@@ -153,27 +153,44 @@
       let scratched = 0;
       let isFullyRevealed = false;
       
+      const scratchGradients = {
+        silver:      'linear-gradient(135deg, #8A8A8A 0%, #D8D8D8 50%, #A0A0A0 100%)',
+        gold:        'linear-gradient(135deg, #B8960C 0%, #FFD700 50%, #C8A400 100%)',
+        rainbow:     'linear-gradient(135deg, #FF6B9D 0%, #C368E8 50%, #4FACFE 100%)',
+        copper:      'linear-gradient(135deg, #B87333 0%, #E8A050 50%, #A0602A 100%)',
+        rosegold:    'linear-gradient(135deg, #C8858A 0%, #F5C8C8 50%, #D4909A 100%)',
+        black:       'linear-gradient(135deg, #1A1A1A 0%, #555555 50%, #333333 100%)',
+        holographic: 'linear-gradient(135deg, #FF6B9D 0%, #FFD700 25%, #6BCB77 50%, #4FACFE 75%, #C368E8 100%)',
+        emerald:     'linear-gradient(135deg, #1B5E20 0%, #4CAF50 50%, #2E7D32 100%)',
+      };
+
+      const scratchStops = {
+        silver:      [[0, '#8A8A8A'], [0.5, '#D8D8D8'], [1, '#A0A0A0']],
+        gold:        [[0, '#B8960C'], [0.5, '#FFD700'], [1, '#C8A400']],
+        rainbow:     [[0, '#FF6B9D'], [0.5, '#C368E8'], [1, '#4FACFE']],
+        copper:      [[0, '#B87333'], [0.5, '#E8A050'], [1, '#A0602A']],
+        rosegold:    [[0, '#C8858A'], [0.5, '#F5C8C8'], [1, '#D4909A']],
+        black:       [[0, '#1A1A1A'], [0.5, '#555555'], [1, '#333333']],
+        holographic: [[0, '#FF6B9D'], [0.25, '#FFD700'], [0.5, '#6BCB77'], [0.75, '#4FACFE'], [1, '#C368E8']],
+        emerald:     [[0, '#1B5E20'], [0.5, '#4CAF50'], [1, '#2E7D32']],
+      };
+
       function initCanvas() {
         const rect = cardContent.getBoundingClientRect();
         canvas.width = rect.width;
         canvas.height = rect.height;
 
-        // Gradientes iguales a los del editor
-        const textureGradients = {
-          silver:      [[0, '#8A8A8A'], [0.5, '#D8D8D8'], [1, '#A0A0A0']],
-          gold:        [[0, '#B8960C'], [0.5, '#FFD700'], [1, '#C8A400']],
-          rainbow:     [[0, '#FF6B9D'], [0.5, '#C368E8'], [1, '#4FACFE']],
-          copper:      [[0, '#B87333'], [0.5, '#E8A050'], [1, '#A0602A']],
-          rosegold:    [[0, '#C8858A'], [0.5, '#F5C8C8'], [1, '#D4909A']],
-          black:       [[0, '#1A1A1A'], [0.5, '#555555'], [1, '#333333']],
-          holographic: [[0, '#FF6B9D'], [0.25, '#FFD700'], [0.5, '#6BCB77'], [0.75, '#4FACFE'], [1, '#C368E8']],
-          emerald:     [[0, '#1B5E20'], [0.5, '#4CAF50'], [1, '#2E7D32']],
-        };
+        // Apply gradient to full card and make header transparent — seamless look
+        const giftCard = document.querySelector('.gift-card');
+        giftCard.style.background = scratchGradients[cardData.texture] || scratchGradients.black;
+        cardHeader.style.background = 'transparent';
 
-        const stops = textureGradients[cardData.texture] || textureGradients.black;
-        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        // Align canvas gradient with the card-level gradient by offsetting by header height
+        const headerHeight = cardHeader.getBoundingClientRect().height;
+        const stops = scratchStops[cardData.texture] || scratchStops.black;
+        const gradient = ctx.createLinearGradient(0, -headerHeight, canvas.width, canvas.height);
         stops.forEach(([pos, color]) => gradient.addColorStop(pos, color));
-        
+
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -280,15 +297,10 @@
         isFullyRevealed = true;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         updateProgress(100);
-        
-        // Cambiar fondo del header
-        if (cardData.backgroundType === 'color') {
-          cardHeader.style.background = cardData.backgroundValue;
-        } else if (cardData.backgroundType === 'image') {
-          cardHeader.style.backgroundImage = `url('${cardData.backgroundValue}')`;
-          cardHeader.style.backgroundSize = 'cover';
-          cardHeader.style.backgroundPosition = 'center';
-        }
+
+        // Remove card-level gradient and restore header to its texture color
+        document.querySelector('.gift-card').style.background = '';
+        cardHeader.style.background = scratchGradients[cardData.texture] || scratchGradients.black;
       }
       
       // Event listeners
