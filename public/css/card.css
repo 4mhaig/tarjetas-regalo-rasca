@@ -176,6 +176,20 @@
   box-shadow: var(--shadow-xl);
 }
 
+/* Link descarga PDF */
+.pdf-download-link {
+  display: block;
+  text-align: center;
+  margin-top: 16px;
+  font-size: 13px;
+  color: #999;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.pdf-download-link:hover { color: #555; }
+
 /* Página de tarjeta expirada */
 .expired-container {
   display: flex;

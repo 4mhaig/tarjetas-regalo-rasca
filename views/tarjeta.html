@@ -73,19 +73,28 @@
         headerText = card.icon ? `${card.icon} Tarjeta de Regalo` : 'Tarjeta de Regalo';
       }
       
-      const bgStyle = card.backgroundType === 'color' 
-        ? `background: ${card.backgroundValue};`
-        : card.backgroundType === 'image'
-        ? `background-image: url('${card.backgroundValue}'); background-size: cover; background-position: center;`
-        : '';
-      
+      let bgStyle = '';
+      let textureClass = '';
+      if (card.backgroundType === 'color') {
+        bgStyle = `background: ${card.backgroundValue};`;
+      } else if (card.backgroundType === 'image') {
+        bgStyle = `background-image: url('${card.backgroundValue}'); background-size: cover; background-position: center;`;
+      } else if (card.backgroundType === 'texture') {
+        try {
+          const tex = JSON.parse(card.backgroundValue);
+          bgStyle = `background-color: ${tex.bgColor}; background-image: ${tex.bgImage}; background-size: ${tex.bgSize};`;
+          if (tex.bgPosition) bgStyle += ` background-position: ${tex.bgPosition};`;
+          textureClass = ' has-texture';
+        } catch (e) {}
+      }
+
       const html = `
         <div class="gift-card">
           <div class="gift-card-header" id="card-header" style="background: ${headerColor};">
             <h2>${headerText}</h2>
             <p>Rasca para descubrir tu sorpresa</p>
           </div>
-          <div class="gift-card-content" id="card-content" style="${bgStyle}">
+          <div class="gift-card-content${textureClass}" id="card-content" style="${bgStyle}">
             <div class="gift-content" id="gift-content">
               ${card.icon ? `<div class="gift-icon">${card.icon}</div>` : ''}
               <h3>${card.title}</h3>
@@ -107,6 +116,7 @@
             </div>
           </div>
         </div>
+        <a class="pdf-download-link" onclick="downloadCardPDF()">Descargar como PDF</a>
       `;
       
       document.getElementById('card-container').innerHTML = html;
@@ -166,22 +176,7 @@
         
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Texto "RASCA AQUÍ"
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-        ctx.font = 'bold 24px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('RASCA AQUÍ', canvas.width / 2, canvas.height / 2);
-        
-        // Puntos decorativos
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-        for (let i = 0; i < 100; i++) {
-          ctx.beginPath();
-          ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, 2, 0, Math.PI * 2);
-          ctx.fill();
-        }
-        
+
         scratched = 0;
         updateProgress(0);
       }
@@ -311,6 +306,25 @@
       
       // Responsive
       window.addEventListener('resize', initCanvas);
+    }
+
+    // Descargar como PDF
+    async function downloadCardPDF() {
+      try {
+        const cardElement = document.querySelector('.gift-card');
+        const canvas = await html2canvas(cardElement, { scale: 2, backgroundColor: null });
+        const imgData = canvas.toDataURL('image/png');
+        const w = window.open('', '_blank');
+        w.document.write(`<!DOCTYPE html><html><head><style>
+          *{margin:0;padding:0;box-sizing:border-box}
+          body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f5f5f5}
+          img{max-width:500px;width:90%;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.15)}
+          @media print{body{background:white}img{max-width:100%;box-shadow:none}}
+        </style></head><body><img src="${imgData}"/><script>window.onload=()=>window.print()<\/script></body></html>`);
+        w.document.close();
+      } catch (error) {
+        console.error('Error generando PDF:', error);
+      }
     }
 
     // Descargar imagen de la tarjeta
