@@ -35,10 +35,14 @@
         
         const data = await response.json();
         cardData = data.card;
-        
+
         renderCard(cardData);
-        initScratchEffect();
-        
+        try {
+          initScratchEffect();
+        } catch (scratchError) {
+          console.error('Error en scratch effect:', scratchError);
+        }
+
       } catch (error) {
         console.error('Error cargando tarjeta:', error);
         showExpired();
@@ -48,9 +52,14 @@
     // Renderizar tarjeta
     function renderCard(card) {
       const headerColors = {
-        silver: 'linear-gradient(135deg, #534AB7 0%, #7F77DD 100%)',
-        gold: 'linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)',
-        rainbow: 'linear-gradient(135deg, #FF6B9D 0%, #C368E8 50%, #4FACFE 100%)'
+        silver:      'linear-gradient(135deg, #534AB7 0%, #7F77DD 100%)',
+        gold:        'linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)',
+        rainbow:     'linear-gradient(135deg, #FF6B9D 0%, #C368E8 50%, #4FACFE 100%)',
+        black:       'linear-gradient(135deg, #1A1A1A 0%, #333333 100%)',
+        copper:      'linear-gradient(135deg, #8B4513 0%, #CD7F32 100%)',
+        rosegold:    'linear-gradient(135deg, #B5606A 0%, #E8A0A8 100%)',
+        holographic: 'linear-gradient(135deg, #6A3DB8 0%, #9B6FE8 100%)',
+        emerald:     'linear-gradient(135deg, #1B6B3A 0%, #2EAE62 100%)',
       };
       
       const headerColor = headerColors[card.texture];
@@ -105,7 +114,10 @@
 
     // Mostrar página de tarjeta expirada
     function showExpired() {
-      document.getElementById('card-container').innerHTML = `
+      const container = document.getElementById('card-container');
+      container.style.padding = '0';
+      container.style.minHeight = '0';
+      container.innerHTML = `
         <div class="expired-container">
           <div class="expired-icon">😢</div>
           <h2>Esta tarjeta ha expirado</h2>
@@ -138,9 +150,14 @@
         
         // Gradientes según textura
         const textureGradients = {
-          silver: ['#C0C0C0', '#E8E8E8', '#A8A8A8'],
-          gold: ['#D4AF37', '#FFD700', '#B8860B'],
-          rainbow: ['#FF6B9D', '#C368E8', '#4FACFE']
+          silver:      ['#C0C0C0', '#E8E8E8', '#A8A8A8'],
+          gold:        ['#D4AF37', '#FFD700', '#B8860B'],
+          rainbow:     ['#FF6B9D', '#C368E8', '#4FACFE'],
+          black:       ['#1A1A1A', '#333333', '#0A0A0A'],
+          copper:      ['#8B4513', '#CD7F32', '#6B3410'],
+          rosegold:    ['#C68B8B', '#E8A0B0', '#B5606A'],
+          holographic: ['#9B6FE8', '#E87ABF', '#6A3DB8'],
+          emerald:     ['#1B6B3A', '#2EAE62', '#145228'],
         };
         
         const colors = textureGradients[cardData.texture];
