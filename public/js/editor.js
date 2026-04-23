@@ -542,20 +542,21 @@ function animatePreview(card) {
 
   const scratchLayer = document.createElement('div');
   scratchLayer.style.cssText = `
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    opacity: 0; transition: opacity 1.5s ease-in-out; z-index: 10;
-    display: flex; align-items: center; justify-content: center;
-    color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 600;
-    letter-spacing: 0.1em; text-transform: uppercase;
+    position: absolute; inset: 0; z-index: 10;
+    opacity: 1; transition: opacity 1.2s ease-in-out;
   `;
-
-  const textureGradients = { ...textureHeaderColors };
-
-  scratchLayer.style.background = textureGradients[cardConfig.texture];
-  scratchLayer.textContent = 'RASCA AQUÍ';
+  scratchLayer.style.background = textureHeaderColors[cardConfig.texture] || textureHeaderColors.black;
   content.appendChild(scratchLayer);
 
-  setTimeout(() => { scratchLayer.style.opacity = '1'; }, 1500);
+  function cycle() {
+    scratchLayer.style.opacity = '0';
+    setTimeout(() => {
+      scratchLayer.style.opacity = '1';
+      setTimeout(cycle, 1800);
+    }, 2200);
+  }
+
+  setTimeout(cycle, 800);
 }
 
 function copyLink() {
