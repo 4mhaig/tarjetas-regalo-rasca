@@ -21,6 +21,7 @@ mongoose.connect(process.env.MONGODB_URI)
 // Middlewares
 app.use(helmet({
   contentSecurityPolicy: false
+  frameguard: false
 }));
 app.use(cors());
 app.use(express.json({ limit: '5mb' }));
