@@ -22,7 +22,8 @@ const cardSchema = new mongoose.Schema({
     enum: ['silver', 'gold', 'rainbow', 'black', 'copper', 'rosegold', 'holographic', 'emerald'],
     default: 'black'
   },
-  icon: String, // Emoji o vacío si no hay icono
+  icon: String,
+  iconType: { type: String, enum: ['emoji', 'image'], default: 'emoji' },
   
   // Fondo
   backgroundType: {

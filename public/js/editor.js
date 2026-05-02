@@ -464,6 +464,7 @@ async function generateCard() {
     to: cardConfig.to,
     texture: cardConfig.texture,
     icon: cardConfig.iconType === 'image' ? cardConfig.iconImageSrc : cardConfig.icon,
+    iconType: cardConfig.iconType || 'emoji',
     backgroundType: cardConfig.backgroundType,
     backgroundValue: cardConfig.backgroundType === 'texture'
       ? JSON.stringify(backgroundTextures[cardConfig.backgroundValue])

@@ -86,13 +86,14 @@
       
       const headerColor = headerColors[card.texture];
       
+      const iconPrefix = (card.icon && card.iconType !== 'image') ? `${card.icon} ` : '';
       let headerText = '';
       if (card.headerType === 'personal' && card.from && card.to) {
-        headerText = card.icon ? `${card.icon} De ${card.from} para ${card.to}` : `De ${card.from} para ${card.to}`;
+        headerText = `${iconPrefix}De ${card.from} para ${card.to}`;
       } else if (card.headerType === 'personal' && card.to) {
-        headerText = card.icon ? `${card.icon} Para ${card.to}` : `Para ${card.to}`;
+        headerText = `${iconPrefix}Para ${card.to}`;
       } else {
-        headerText = card.icon ? `${card.icon} Tarjeta de Regalo` : 'Tarjeta de Regalo';
+        headerText = `${iconPrefix}Tarjeta de Regalo`;
       }
       
       let bgStyle = '';
@@ -119,7 +120,7 @@
           </div>
           <div class="gift-card-content${textureClass}" id="card-content" style="${bgStyle}">
             <div class="gift-content" id="gift-content">
-              ${card.icon ? `<div class="gift-icon">${card.icon}</div>` : ''}
+              ${card.icon ? (card.iconType === 'image' ? `<div class="gift-icon-img-wrap"><img src="${card.icon}" style="width:100%;height:100%;object-fit:cover;" alt=""></div>` : `<div class="gift-icon">${card.icon}</div>`) : ''}
               <h3>${card.title}</h3>
               <p class="message">${card.message}</p>
               ${card.signature ? `<p class="signature">${card.signature}</p>` : ''}
